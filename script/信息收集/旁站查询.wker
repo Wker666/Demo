@@ -1,0 +1,33 @@
+#define re = host":"(.*?)"
+#define qian = "Total":
+#define hou = ,"
+function GetSameIp(page,iplist)
+{
+	res = HttpPost("http://s.tool.chinaz.com/AjaxTool.ashx?action=getsameip","page=".page."&iplist=".iplist,"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	reReal = StrRe(res[0],re);
+	zongji = GettextMiddle(res[0],qian,hou);
+	num = GetArrayNum(reReal)/2;
+	i = 0;
+	while(i<num)
+	{
+		print( reReal[ToInt(i*2+1)]);
+		i=i+1;
+	}
+	if(zongji > (ToInt(page)*20)){
+		return 1;
+	}else{
+		return 2;
+	}
+}
+function main(args)
+{	
+	print("请输入要查询的网址:");
+	key = input();
+	r = HttpGet("http://s.tool.chinaz.com/same?s=".key,"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	iplist = GettextMiddle(r[0],"iplist = '","'");
+	index = 1;
+	while(GetSameIp(ToInt(index),iplist) == 1){
+		index = index+1;
+	}
+	print("所有旁站IP查寻完毕","总共查询了:".ToInt(index)."页");
+}

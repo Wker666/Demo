@@ -1,0 +1,9 @@
+#define post = __EVENTTARGET=Button1&__EVENTARGUMENT=&ctl00%24ContentPlaceHolder1%24TextBoxInput=md5value&ctl00%24ContentPlaceHolder1%24InputHashType=md5&ctl00%24ContentPlaceHolder1%24Button1=%E6%9F%A5%E8%AF%A2&ctl00%24ContentPlaceHolder1%24HiddenField1=
+#define qian = onmouseover="toggle();">
+#define hou = </span>
+function main(args)
+{
+	print("请输入您要解密的md5值:");
+	res = HttpPost("https://www.cmd5.com/",StrReplace(post,"md5value",input()),"Referer: https://www.cmd5.com/".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	print("解密的结果:".GettextMiddle(res[0],qian,hou));
+}

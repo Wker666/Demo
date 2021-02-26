@@ -1,0 +1,23 @@
+#define re = data-mdurl="(.*?)"
+function main(args)
+{	
+	print("请输入要搜索的关键字:");
+	key = input();
+	print("请输入起始的页数:");
+	index = input();
+	print("请输入结束的页数:");
+	end = input();
+	while(index < end)
+	{
+		r = HttpGet("https://www.so.com/s?q=".key."&pn=".index,"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+		index = index+1;
+		reshe = StrRe(r[0],re);
+		num = GetArrayNum(reshe)/2;
+		i = 0;
+		while(i < num)
+		{
+			print(reshe[ToInt(i*2+1)]);
+			i = i+1;
+		}
+	}
+}

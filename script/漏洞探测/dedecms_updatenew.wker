@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /install/index.php.bak
+#define bug = install/install_lock.txt
+#define info = /install/index.php.bak|存在Dedecms远程写入文件漏洞
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

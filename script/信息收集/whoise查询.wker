@@ -1,0 +1,45 @@
+#define zcsRe = 注册商</div><div class.*?<span>(.*?)</span></div>
+#define zcyxRe = 联系邮箱</div><div class.*?<span>(.*?)</span>
+#define lxsjRe = 联系电话</div><div class.*?<span>(.*?)</span>
+#define ymfwqRe = 域名服务器</div><div class.*?<span>(.*?)</span>
+#define dnsRe = DNS</div><div class=.*?right">(.*?)</div>
+function main(args)
+{
+	print("请输入要查询的网址:");
+	key = input();
+	r = HttpGet("http://whois.chinaz.com/".key,"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	zcs = StrRe(r[0],zcsRe);
+	if(GetArrayNum(zcs) >= 2)
+	{
+		print("注册商:".zcs[1]);
+	}
+	zcyx = StrRe(r[0],zcyxRe);
+	if(GetArrayNum(zcyx) >= 2)
+	{
+		print("注册邮箱:".zcyx[1]);
+	}
+	lxsj = StrRe(r[0],lxsjRe);
+	if(GetArrayNum(lxsj) >= 2)
+	{
+		print("联系手机:".lxsj[1]);
+	}
+	ymfwq = StrRe(r[0],ymfwqRe);
+	if(GetArrayNum(ymfwq) >= 2)
+	{
+		print("域名服务器:".ymfwq[1]);
+	}
+	dns = StrRe(r[0],dnsRe);
+	if(GetArrayNum(dns) >= 2)
+	{
+		dnss = StrSplit(dns[1],"<br/>");
+		num = GetArrayNum(dnss);
+		print("DNS:");
+		i = 0;
+		while(i < num)
+		{
+			print(dnss[ToInt(i)]);
+			i = i+1;
+		}
+	}
+	
+}

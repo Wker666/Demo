@@ -1,0 +1,20 @@
+function main(args)
+{
+	print("请输入要检测的网站:");
+	web = input();
+	dirs = StrSplit(ReadFile("script\信息收集\dir.txt"),StrRN());
+	num = GetArrayNum(dirs);
+	i = 0;
+	print("当前字典条数:".num);
+	print("正在奋力检测中:");
+	while(i < num)
+	{
+		res = HttpGet(web.dirs[ToInt(i)],"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+		if(StrFindStr(res[1],"200 OK",0) != "-1")
+		{
+			print(web.dirs[ToInt(i)]);
+		}
+		i = i+1;
+	}
+	print("扫描完毕");
+}

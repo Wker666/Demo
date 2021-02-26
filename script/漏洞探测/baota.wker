@@ -1,0 +1,29 @@
+#define find = 200 OK
+#request url = var
+#define payload = /login.php
+
+function judge(web)
+{
+	r = HttpGet(web.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(r[1],find,0)!= "-1")
+	{
+		return 1;
+	}else
+	{
+		return 2;
+	}
+
+}
+
+function main(args)
+{
+	if(judge(url."/admin_aspcms/_system/AspCms_SiteSetting.asp") == 1)
+	{
+		res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+		if(StrFindStr(res[0],"服务器状态",0)!= "-1")
+		{
+			print(url."/login.php 存在admin|admin|存在宝塔弱口令");
+		}
+	}
+	
+}

