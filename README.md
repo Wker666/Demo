@@ -783,7 +783,7 @@ usage: java -jar WkerIDE.jar -g
 
    首先我们想要做暴力破解我们就需要来分析这个网站的一个信息，首先我们先捕获账号密码提交的HTTP数据包：
 
-   ![post](25.jpg)
+   ![post](jpg/25.jpg)
 
    是一个post封包：
 
@@ -881,7 +881,7 @@ usage: java -jar WkerIDE.jar -g
 
    最终我们将会得到下面的结果：
 
-   ![res]jpg/26.jpg)
+   ![res](jpg/26.jpg)
 
    可以看到我们最终爆破成功了，验证码识别的并不是完全准确，但是准确率还是可以的。
 
