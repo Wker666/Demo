@@ -1,0 +1,5 @@
+function Enc(str)
+{
+	//return str;
+	return RunJS(ReadFile("script\ATTACKUTILS\js.js"),"e",str);
+}
