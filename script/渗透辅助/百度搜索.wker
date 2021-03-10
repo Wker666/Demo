@@ -9,7 +9,7 @@ function main(args)
 	end = input();
 	while(index < end)
 	{
-		r = HttpGet("https://www.baidu.com/s?wd=".key."&pn=".((index-1)*10),"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+		r = HttpGet("https://www.baidu.com/s?wd=".URLEncode(key)."&pn=".((index-1)*10),"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
 		res = StrRe(r[0],re);
 		num = GetArrayNum(res)/2;
 		i = 0;

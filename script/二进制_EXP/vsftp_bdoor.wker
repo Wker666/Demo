@@ -1,6 +1,7 @@
 function main(args)
 {
-	ftp = CreateTCPSocket("192.168.209.143",21);
+	print("请输入测试的ip:");
+	ftp = CreateTCPSocket(input(),21);
 	TCPSocketRecv(ftp);
 	TCPSocketSend(ftp,AddBytes(GetStrBytes("USER anonymous:)"),GetBytes("10")));
 	TCPSocketSend(ftp,AddBytes(GetStrBytes("PASS wker"),GetBytes("10")));

