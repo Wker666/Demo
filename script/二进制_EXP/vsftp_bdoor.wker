@@ -1,21 +1,18 @@
 function main(args)
 {
 	print("请输入测试的ip:");
-	ftp = CreateTCPSocket(input(),21);
+	ip = input();
+	ftp = CreateTCPSocket(ip,21);
 	TCPSocketRecv(ftp);
 	TCPSocketSend(ftp,AddBytes(GetStrBytes("USER anonymous:)"),GetBytes("10")));
 	TCPSocketSend(ftp,AddBytes(GetStrBytes("PASS wker"),GetBytes("10")));
-
-	s = CreateTCPSocket("192.168.209.143",6200);
+	s = CreateTCPSocket(ip,6200);
 	wb = input();
-	while(wb !="exit")
-	{
-
+	while(wb !="exit"){
 		TCPSocketSend(s,AddBytes(GetStrBytes(wb),GetBytes("10")));
 		print(TCPSocketRecv(s));
 		wb = input();
 	}
 	CloseTCPSocket(s);
-	
 	CloseTCPSocket(ftp);
 }

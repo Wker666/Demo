@@ -29,5 +29,4 @@ function main(args)
 		injectionTxt(webUrl,cmd);
 		print(GetRes(webUrl));
 	}
-	
-}
+}
