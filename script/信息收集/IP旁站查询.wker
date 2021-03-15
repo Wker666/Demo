@@ -1,0 +1,18 @@
+#define re = "domain": "(.*?)"
+function GetSameDomain(ip){
+	res = HttpGet("http://api.webscan.cc/?action=query&ip=".ip,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	r = StrRe(res[0],re);
+	num = GetArrayNum(r);
+	i=1;
+	while(i<num){
+		print(r[i]);
+		i = ToInt(i+2);
+	}
+	return "";
+}
+function main(args){
+	print("请输入ip:");
+	ip = input();
+	GetSameDomain(ip);
+	print("提取完毕");
+}

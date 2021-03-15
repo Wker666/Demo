@@ -1,0 +1,14 @@
+#define re = <a href=\\"\\/c\\/.*?\\" title=\\".*?\\">(.*?)<\\/a><\\/td>
+function GetCMS(domain){
+	res = HttpGet("https://whatcms.org/?gpreq=json&jsoncallback=jQuery22406001180739024818_1615709467482&nb=1seynb5r532q9m7txdofckgy2vdeemzt8k4p5tddhol8hea898nok6uwugakqc4du19zdh6ba7ijdj35&s=".URLEncode(domain),"Host: whatcms.org".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	r = StrRe(res[0],re);
+	if(GetArrayNum(r) >= 2){
+		return r[1];
+	}else{
+		return "";
+	}
+}
+function main(args){
+	print("请输入要识别的网站:");
+	print("识别的CMS:".GetCMS(input()));
+}
