@@ -4,12 +4,7 @@ function main(args){
 	payload = "*1".StrRN()."$4".StrRN()."info".StrRN();
 	s = CreateTCPSocket(url,6379);
 	TCPSocketSend(s,GetStrBytes(payload));
-	wb = TCPSocketRecv(s);
-	res = res;
-	while(wb != "no next line"){
-		wb = TCPSocketRecv(s);
-		res=res.StrRN().wb;
-	}
+	res = TCPSocketRecv(s);
 	if(StrFindStr(res,"redis_version",0) != -1){
 			print("存在Redis未授权访问漏洞");
 		}
