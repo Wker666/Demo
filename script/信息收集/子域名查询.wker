@@ -12,5 +12,6 @@ function GetSubDomain(domain){
 }
 
 function main(args){
-	GetSubDomain("www.ahnw.cn");
+	print("输入要检测的域名:");
+	GetSubDomain(input());
 }
