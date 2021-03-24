@@ -1,0 +1,32 @@
+#request urls = array
+
+function GetXSSs(path){
+	array res;
+	list = StrSplit(ReadFile(path),StrRN());
+	i = 0;
+	num = GetArrayNum(list);
+	while(i < num){
+		url=list[ToInt(i)];
+		ArrayAddEle(res,url);
+		i=i+1;
+	}
+	return res;
+}
+function main(args){
+	xss = GetXSSs("script\综合漏洞\xss.txt");
+	xssnum = GetArrayNum(xss);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		j = 0;
+		while(j<xssnum){
+			r = HttpGetSafe(url."%20".xss[j],"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+			if(StrFindStr(r[0],xss[j],0) != "-1"){
+				print(url."%20".xss[j]."存在xss漏洞");
+			}
+			j = ToInt(j+1);
+		}
+		i = ToInt(i+1);
+	}
+}

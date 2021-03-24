@@ -1,0 +1,71 @@
+#define re = ">(.*?)<em><!--red_beg-->(.*?)<!--red_end--></em>(.*?)</a>
+#define Namere = ">(.*?)</a><span class="s2
+#define Linkre = <a target="_blank" href="(.*?)" id="
+function GetMin(f,s,t){
+	min = f;
+	if(s < min){
+		min = s;
+	}
+	if(t<min){
+		min = t;
+	}
+	return min;
+}
+function GetLink(source){
+	list = StrRe(source,Linkre);
+	array reList;
+	i = 1;num = GetArrayNum(list);
+	while(i < num){
+		ArrayAddEle(reList,"https://weixin.sogou.com".StrReplace(list[ToInt(i)],"\&amp;","\&"));
+		i=i+2;
+	}
+	return reList;
+}
+function GetName(source){
+	list = StrRe(source,Namere);
+	array reList;
+	i = 1;num = GetArrayNum(list);
+	while(i < num){
+		ArrayAddEle(reList,list[ToInt(i)]);
+		i=i+2;
+	}
+	return reList;
+}
+function GetContentName(source){
+	list = StrRe(source,re);
+	array reList;
+	i = 0;num = GetArrayNum(list);
+	while(1 == 1){
+		tmp = list[ToInt(i+1)].list[ToInt(i+2)].list[ToInt(i+3)];
+		ArrayAddEle(reList,tmp);
+		i=i+4;
+		if(i >= num){
+			break;
+		}
+	}
+	return reList;
+}
+function GetSource(content,page){
+	res = HttpGetSafe("https://weixin.sogou.com/weixin?type=2&query=".URLEncode(content)."&page=".page,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+	return res[0];
+}
+function main(args){
+	print("请输入搜索的关键字:");key =  input();
+	print("请输入起始页数:");start = input();
+	print("请输入结束页数:");end = input();
+	while(start <= end){
+		print("当前提取的页数:".start);
+		s = GetSource(key,start);
+		ContentName = GetContentName(s);
+		Name = GetName(s);
+		Link = GetLink(s);
+		num = GetMin(GetArrayNum(ContentName),GetArrayNum(Name),GetArrayNum(Link));
+		i = 0;
+		while(i < num){
+			neirong = ContentName[i].StrRN().Name[i].StrRN().Link[i];
+			WriteFile(ContentName[i].".txt",neirong);
+			i = ToInt(i+1);
+		}
+		start = ToInt(start+1);
+	}
+}

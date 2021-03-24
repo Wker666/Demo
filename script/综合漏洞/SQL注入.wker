@@ -1,0 +1,17 @@
+#request urls = array
+#include ATTACKUTILS/SQLAttack.wker
+
+function main(args){
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		Reallength = GetRealLength(url);
+		if(JudgeRESEqule(url." and 1=1",Reallength) == 1){
+			if(JudgeRESEqule(url."and 1=2",Reallength) == 0){
+				print(url."存在SQL注入");
+			}
+		}
+		i = ToInt(i+1);
+	}
+}

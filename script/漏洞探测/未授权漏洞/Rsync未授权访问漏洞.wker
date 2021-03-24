@@ -1,0 +1,15 @@
+#request url = var
+
+function main(args){
+	s = CreateTCPSocket(url,873);
+	TCPSocketSend(s,GetBytes("64,82,83,89,78,67,68,58,32,51,49,46,48,10"));
+	res = TCPSocketRecv(s);
+	if(StrFindStr(res,"RSYNCD",0) != -1){
+		TCPSocketSend(s,GetBytes("10"));
+		wb = TCPSocketRecv(s);
+		if(wb != ""){
+			print("存在Rsync未授权访问漏洞");
+		}
+	}
+	CloseTCPSocket(s);
+}

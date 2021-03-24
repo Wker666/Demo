@@ -1,0 +1,17 @@
+#request urls = array
+#include ATTACKUTILS/SQLAttack.wker
+
+function main(args){
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		Reallength = GetRealLength(url);
+		if(JudgeRESEqule(url." ou=*",Reallength) == 1){
+			if(JudgeRESEqule(url." ou=WkerWFC666",Reallength) == 0){
+				print(url."存在Xpath注入");
+			}
+		}
+		i = ToInt(i+1);
+	}
+}

