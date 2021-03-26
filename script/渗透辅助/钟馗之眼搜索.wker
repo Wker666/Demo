@@ -1,0 +1,47 @@
+#define post = {"username": "
+#define postt = ", "password": "
+#define posth = "}
+#define tokenq = access_token": "
+#define tokenh = "
+#define re = "ip": "(.*?)"
+function search(key,page,token){
+	url = "https://api.zoomeye.org/host/search?query=".key."&page=".page;
+	try{
+		res = HttpGet(url,"Authorization: JWT ".token.StrRN()."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+		list = StrRe(res[0],re);
+		num = GetArrayNum(list);
+		i = 1;
+		while(i < num){
+			print(list[i]);
+			i = ToInt(i+2);
+		}
+	}catch{
+		print("获取出错");
+	}
+	return "";
+}
+function GetToken(user,pass){
+	try{
+		res = HttpPost("https://api.zoomeye.org/user/login",post.user.postt.pass.posth,"Content-Type: application/json");
+		return GettextMiddle(res[0],tokenq,tokenh);
+	}catch{
+		print("token获取错误");
+	}
+	return "";
+}
+function main(args){
+	print("请输入用户名:");user = input();
+	print("请输入密码:");pass = input();
+	Token = GetToken(user,pass);
+	if(Token == ""){
+		return "";
+	}else{
+		print("请输入搜索内容:");content = input();
+		print("请输入获取的页数:");page = input();
+		i = 1;
+		while(i <= page){
+			search(content,i,Token);
+			i = ToInt(i+1);
+		}
+	}
+}

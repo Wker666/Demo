@@ -1,0 +1,25 @@
+#define re = \["(.*?)",
+function search(key,size,page,email,tooken){
+	url = "https://fofa.so/api/v1/search/all?email=".email."&key=".tooken."&qbase64=" . Encode64(key) . "&size=" . size . "&page=" . page."&full=true";
+	try{
+		res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+		list = StrRe(res[0],re);
+		num = GetArrayNum(list);
+		i = 1;
+		while(i < num){
+			print(list[i]);
+			i = ToInt(i+2);
+		}
+	}catch{
+		print("获取出错");
+	}
+	return "";
+}
+
+function main(args){
+	print("请输入邮箱:");email = input();
+	print("请输入token:");token = input();
+	print("请输入搜索内容:");content = input();
+	print("请输入获取的个数:");size = input();
+	search(content,size,1,email,token);
+}
