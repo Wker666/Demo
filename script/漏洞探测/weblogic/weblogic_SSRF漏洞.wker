@@ -1,9 +1,19 @@
-#request url = var
+#request urls = array
 
 function main(args){
-	res = HttpGet(url."/uddiexplorer/","User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
-	if(StrFindStr(res[1],"200 OK",0) != "-1")
-	{
-		print(url."存在weblogic_ssrf漏洞");
+	printclolor("当前正在检测:"."weblogic_ssrf漏洞",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url."/uddiexplorer/","User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+			if(StrFindStr(res[1],"200 OK",0) != "-1")
+			{
+				printclolor("[+]".urls[i]."存在weblogic_ssrf漏洞",3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
 }

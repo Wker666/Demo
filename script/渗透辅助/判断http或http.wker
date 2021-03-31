@@ -1,0 +1,21 @@
+function main(args){
+	print("请输入检测的列表文件:");
+	list = StrSplit(ReadFile(input()),StrRN());
+	i = 0;
+	num = GetArrayNum(list);
+	while(i < num){
+		try{
+			HttpGet("https://".list[i],"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+			printclolor("https://".list[i],1);
+		}catch{
+			try{
+				HttpGet("http://".list[i],"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+				printclolor("http://".list[i],4);
+			}catch{
+				printclolor(list[i]."没有探测到协议,可能是证书错误！",6);
+			}
+		}
+		i = ToInt(i+1);
+	}
+	print("检测完毕,按任意键退出...");input();
+}

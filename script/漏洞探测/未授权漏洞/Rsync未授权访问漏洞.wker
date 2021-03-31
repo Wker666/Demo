@@ -1,15 +1,25 @@
-#request url = var
+#request urls = array
 
 function main(args){
-	s = CreateTCPSocket(url,873);
-	TCPSocketSend(s,GetBytes("64,82,83,89,78,67,68,58,32,51,49,46,48,10"));
-	res = TCPSocketRecv(s);
-	if(StrFindStr(res,"RSYNCD",0) != -1){
-		TCPSocketSend(s,GetBytes("10"));
-		wb = TCPSocketRecv(s);
-		if(wb != ""){
-			print("存在Rsync未授权访问漏洞");
+	printclolor("当前正在检测:"."Rsync未授权访问漏洞",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			s = CreateTCPSocket(url,873);
+			TCPSocketSend(s,GetBytes("64,82,83,89,78,67,68,58,32,51,49,46,48,10"));
+			res = TCPSocketRecv(s);
+			if(StrFindStr(res,"RSYNCD",0) != -1){
+				TCPSocketSend(s,GetBytes("10"));
+				wb = TCPSocketRecv(s);
+				if(wb != ""){
+					printclolor("[+]".urls[i]."存在Rsync未授权访问漏洞",3);
+				}
+			}
+			CloseTCPSocket(s);
+		}catch{
 		}
+		i = ToInt(i+1);
 	}
-	CloseTCPSocket(s);
 }

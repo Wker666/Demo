@@ -1,13 +1,23 @@
-#request url = var
+#request urls = array
 
 function main(args){
-	payload = "*1".StrRN()."$4".StrRN()."info".StrRN();
-	s = CreateTCPSocket(url,6379);
-	TCPSocketSend(s,GetStrBytes(payload));
-	res = TCPSocketRecv(s);
-	if(StrFindStr(res,"redis_version",0) != -1){
-			print("存在Redis未授权访问漏洞");
+	printclolor("当前正在检测:"."Redis未授权访问漏洞",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			payload = "*1".StrRN()."$4".StrRN()."info".StrRN();
+			s = CreateTCPSocket(url,6379);
+			TCPSocketSend(s,GetStrBytes(payload));
+			res = TCPSocketRecv(s);
+			if(StrFindStr(res,"redis_version",0) != -1){
+				printclolor("[+]".urls[i]."存在Redis未授权访问漏洞",3);
+			}
+			CloseTCPSocket(s);
+		}catch{
 		}
+		i = ToInt(i+1);
 	}
-	CloseTCPSocket(s);
+	
 }

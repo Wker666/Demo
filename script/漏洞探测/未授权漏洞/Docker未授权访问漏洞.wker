@@ -1,16 +1,26 @@
-#request url = var
+#request urls = array
 
 function main(args){
-	payload = "GET /containers/json HTTP/1.1".StrRN()."Host: ".url.":2375".StrRN().StrRN();
-	s = CreateTCPSocket(url,2375);
-	TCPSocketSend(s,GetStrBytes(payload));
-	res = TCPSocketRecv(s);
-	if(StrFindStr(res,"HTTP/1.1 200 OK",0) != -1){
-		if(StrFindStr(res,"Docker",0) != -1){
-			if(StrFindStr(res,"Api-Version",0) != -1){
-					print("存在Docker未授权访问漏洞");
+	printclolor("当前正在检测:"."Docker未授权访问漏洞",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			payload = "GET /containers/json HTTP/1.1".StrRN()."Host: ".url.":2375".StrRN().StrRN();
+			s = CreateTCPSocket(url,2375);
+			TCPSocketSend(s,GetStrBytes(payload));
+			res = TCPSocketRecv(s);
+			if(StrFindStr(res,"HTTP/1.1 200 OK",0) != -1){
+				if(StrFindStr(res,"Docker",0) != -1){
+					if(StrFindStr(res,"Api-Version",0) != -1){
+						printclolor("[+]".urls[i]."存在Docker未授权访问漏洞",3);
+					}
+				}
 			}
+			CloseTCPSocket(s);
+		}catch{
 		}
+		i = ToInt(i+1);
 	}
-	CloseTCPSocket(s);
 }

